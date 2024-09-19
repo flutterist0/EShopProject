@@ -1,4 +1,5 @@
-﻿using Entities.Abstract;
+﻿using Core.Entities.Concrete;
+using Entities.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace Entities.Concrete
         public string Subject { get; set; }
         public string Message { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; }
     }
 }
