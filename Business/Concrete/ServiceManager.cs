@@ -1,10 +1,12 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +15,23 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class ServiceManager(IServiceDal serviceDal) : IServiceService
+	public class ServiceManager(IServiceDal serviceDal, IAddPhotoHelperService addPhotoHelperService) : IServiceService
 	{
 		private readonly IServiceDal _serviceDal = serviceDal;
-		public IResult Add(Service service)
+		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
+		public IResult Add(ServiceAddDto serviceDto)
 		{
-			if (service.Title.Length > 3)
+
+			var guid = Guid.NewGuid() + "-" + serviceDto.Image.FileName;
+			_addPhotoHelperService.AddImage(serviceDto.Image, guid);
+			Service service = new()
 			{
-				_serviceDal.Add(service);
-				return new SuccessResult("Add olundu");
-			}
-			else
-				return new ErrorResult("ELave edilmedi");
+				Title = serviceDto.Title,
+				Description = serviceDto.Description,
+				ImageUrl = "/images/" + guid,
+			};
+			_serviceDal.Add(service);
+			return new SuccessResult("Elave olundu");
 		}
 
 		public IResult Delete(int id)

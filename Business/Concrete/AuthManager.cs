@@ -4,7 +4,7 @@ using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using Core.Helpers.Security.Hashing;
 using Core.Helpers.Security.JWT;
-using Entities.Dto;
+using Entities.Dto.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class AuthManager(IUserService userService,ITokenHelper tokenHelper) : IAuthService
+    public class AuthManager(IUserService userService,ITokenHelper tokenHelper) : IAuthService
 	{
 		private readonly IUserService _userService = userService;
 		private readonly ITokenHelper _tokenHelper = tokenHelper;

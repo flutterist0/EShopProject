@@ -1,11 +1,11 @@
 ﻿using Business.Abstract;
-using Entities.Dto;
+using Entities.Dto.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShopAPI.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class AuthController(IAuthService authService) : ControllerBase
 	{

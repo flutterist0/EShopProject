@@ -1,5 +1,6 @@
 ﻿using Core.Helpers.Results.Abstract;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Business.Abstract
 {
 	public interface ISocialNetworkService
 	{
-		IResult Add(SocialNetwork socialNetwork);
+		IResult Add(SocialNetworkAddDto socialNetworkDto);
 		IResult Update(SocialNetwork socialNetwork, int id);
 		IResult Delete(int id);
 		IDataResult<List<SocialNetwork>> GetAll();

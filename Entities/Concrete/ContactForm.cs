@@ -14,7 +14,5 @@ namespace Entities.Concrete
         public string Email { get; set; }
         public string Subject { get; set; }
         public string Message { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

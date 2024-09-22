@@ -1,9 +1,11 @@
 ﻿using Business.Abstract;
+using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +14,21 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class CategoryManager(ICategoryDal categoryDal):ICategoryService
+	public class CategoryManager(ICategoryDal categoryDal, IAddPhotoHelperService addPhotoHelperService) :ICategoryService
 	{
 		private readonly ICategoryDal _categoryDal = categoryDal;
-		public IResult Add(Category category)
+		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
+		public IResult Add(CategoryAddDto categoryDto)
 		{
-			if (category.Name.Length > 3)
+			var guid = Guid.NewGuid() + "-" + categoryDto.Image.FileName;
+			_addPhotoHelperService.AddImage(categoryDto.Image, guid);
+			Category category = new()
 			{
-				_categoryDal.Add(category);
-				return new SuccessResult("Add olundu");
-			}
-			else
-				return new ErrorResult("ELave edilmedi");
+				Name = categoryDto.Name,
+				ImageUrl = "/images/" + guid,
+			};
+			_categoryDal.Add(category);
+			return new SuccessResult("Elave olundu");
 		}
 
 		public IResult Delete(int id)

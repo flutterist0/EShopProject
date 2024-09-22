@@ -53,6 +53,24 @@ namespace Business.Dependency.Autofac
 			builder.RegisterType<EfSocialNetworkDal>().As<ISocialNetworkDal>().SingleInstance();
 			builder.RegisterType<SocialNetworkManager>().As<ISocialNetworkService>().SingleInstance();
 
+			builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
+			builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance();
+
+			builder.RegisterType<EfProductImageDal>().As<IProductImageDal>().SingleInstance();
+			builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
+
+			builder.RegisterType<EfContactFormDal>().As<IContactFormDal>().SingleInstance();
+			builder.RegisterType<ContactFormManager>().As<IContactFormService>().SingleInstance();
+
+			builder.RegisterType<EfReviewDal>().As<IReviewDal>().SingleInstance();
+			builder.RegisterType<ReviewManager>().As<IReviewService>().SingleInstance();
+
+			builder.RegisterType<EfShippingAddressDal>().As<IShippingAddressDal>().SingleInstance();
+			builder.RegisterType<ShippingAddressManager>().As<IShippingAddressService>().SingleInstance();
+
+			builder.RegisterType<EfFavouriteDal>().As<IFavouriteDal>().SingleInstance();
+			builder.RegisterType<FavouriteManager>().As<IFavouriteService>().SingleInstance();
+
 			builder.RegisterType<AppDbContext>().As<AppDbContext>().SingleInstance();
 			builder.RegisterType<AddPhotoHelper>().As<IAddPhotoHelperService>().SingleInstance();
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();

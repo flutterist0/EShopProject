@@ -105,6 +105,10 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).Conf
 });
 var app = builder.Build();
 
+if (string.IsNullOrEmpty(app.Environment.WebRootPath))
+{
+	app.Environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

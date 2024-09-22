@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Abstract;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Entities.Dto
 {
-	public class LoginDto:IDto
-	{
-		public string Email { get; set; }
-        public string Password { get; set; }
-    }
+   public class BrandAddDto:IDto
+    {
+		public string Name { get; set; }
+		public IFormFile Image { get; set; }
+	}
 }

@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,15 @@ namespace DataAccess.Concrete.EF
 		{
             
         }
-    }
+
+		public List<Favourite> GetAllFavoritesWithProductAndImages(int userId)
+		{
+			AppDbContext appDbContext = new AppDbContext();
+			return appDbContext.Favourites
+	   .Where(f => f.UserId == userId&&f.IsDelete==false)
+	   .Include(f => f.Product)
+	   .ThenInclude(p => p.ProductImages)
+	   .ToList();
+		}
+	}
 }

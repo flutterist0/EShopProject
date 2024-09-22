@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessAspect\" />
     <Folder Include="Validation\" />
   </ItemGroup>
 

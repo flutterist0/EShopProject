@@ -1,5 +1,6 @@
 ﻿using Core.Helpers.Results.Abstract;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Business.Abstract
 {
 	public interface IBrandService
 	{
-		IResult Add(Brand brand);
+		IResult Add(BrandAddDto brand);
 		IResult Update(Brand brand, int id);
 		IResult Delete(int id);
 		IDataResult<List<Brand>> GetAll();

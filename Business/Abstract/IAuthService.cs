@@ -1,7 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Security.JWT;
-using Entities.Dto;
+using Entities.Dto.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-	public interface IAuthService
+    public interface IAuthService
 	{
 		IDataResult<User> Register(RegisterDto registerDto,string password);
 		IDataResult<User> Login(LoginDto loginDto);

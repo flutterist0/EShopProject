@@ -1,10 +1,12 @@
 ﻿using Autofac.Core;
 using Business.Abstract;
+using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +15,21 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class BrandManager(IBrandDal brandDal) : IBrandService
+	public class BrandManager(IBrandDal brandDal, IAddPhotoHelperService addPhotoHelperService) : IBrandService
 	{
 		private readonly IBrandDal _brandDal = brandDal;
-		public IResult Add(Brand brand)
+		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
+		public IResult Add(BrandAddDto brandDto)
 		{
-			if (brand.Name.Length > 3)
+			var guid = Guid.NewGuid() + "-" + brandDto.Image.FileName;
+			_addPhotoHelperService.AddImage(brandDto.Image, guid);
+			Brand brand = new()
 			{
-				_brandDal.Add(brand);
-				return new SuccessResult("Add olundu");
-			}
-			else
-				return new ErrorResult("ELave edilmedi");
+				Name = brandDto.Name,
+				ImageUrl = "/images/" + guid,
+			};
+			_brandDal.Add(brand);
+			return new SuccessResult("Elave olundu");
 		}
 
 		public IResult Delete(int id)

@@ -10,5 +10,6 @@ namespace DataAccess.Abstract
 {
 	public interface IFavouriteDal:IBaseRepository<Favourite>
 	{
+		List<Favourite> GetAllFavoritesWithProductAndImages(int userId);
 	}
 }
