@@ -9,6 +9,9 @@ using Microsoft.OpenApi.Models;
 using Core.Extensions;
 using Core.Helpers.IoC;
 using Core.DependecyResolve;
+using DataAccess.Concrete.EF;
+using Microsoft.EntityFrameworkCore;
+using DataAccess.Abstract;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +38,7 @@ builder.Services.AddAuthentication(x =>
 	};
 });
 
+//builder.Services.AddScoped<DbContext, AppDbContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();

@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-	public interface IFavouriteService
+	public interface ICartService
 	{
-		IResult AddFavourite(int productId, int userId, int quantity);
-		IResult DeleteFavorite(int productId, int userId);
-		IDataResult<List<FavouriteGetAllDto>> GetAllFavorites(int userId);
+		IResult AddCart(int productId, int userId, int quantity);
+		IResult DeleteCart(int userId, int productId);
+		IDataResult<List<CartItemDto>> GetAllCarts(int userId);
 	}
 }

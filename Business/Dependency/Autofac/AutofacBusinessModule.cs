@@ -71,6 +71,12 @@ namespace Business.Dependency.Autofac
 			builder.RegisterType<EfFavouriteDal>().As<IFavouriteDal>().SingleInstance();
 			builder.RegisterType<FavouriteManager>().As<IFavouriteService>().SingleInstance();
 
+			builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
+
+			builder.RegisterType<EfCartDal>().As<ICartDal>().SingleInstance();
+			builder.RegisterType<CartManager>().As<ICartService>().SingleInstance();
+
+
 			builder.RegisterType<AppDbContext>().As<AppDbContext>().SingleInstance();
 			builder.RegisterType<AddPhotoHelper>().As<IAddPhotoHelperService>().SingleInstance();
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();

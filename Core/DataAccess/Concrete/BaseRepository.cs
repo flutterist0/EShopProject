@@ -33,7 +33,7 @@ namespace Core.DataAccess.Concrete
 
         public TEntiy Get(Expression<Func<TEntiy, bool>> filter)
         {
-            return _context.Set<TEntiy>().SingleOrDefault(filter);
+            return _context.Set<TEntiy>().AsNoTracking().SingleOrDefault(filter);
         }
 
         public List<TEntiy> GetAll(Expression<Func<TEntiy, bool>> filter = null)
@@ -46,6 +46,7 @@ namespace Core.DataAccess.Concrete
             var modifyEntity = _context.Entry(entity);
             modifyEntity.State = EntityState.Modified;
             _context.SaveChanges();
-        }
+
+		}
     }
 }

@@ -43,6 +43,64 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 		}
 
+		[HttpGet("getProductsByCategoryId:{categoryId:int:min(1)}")]
+		public IActionResult GetProductsByCategoryId(int categoryId)
+		{
+			var result = _productService.GetProductsByCategory(categoryId);
+            if (result.Success)
+            {
+				return Ok(result);
+            }else
+				return BadRequest(result);
+        }
+
+		[HttpGet("getNewestProducts")]
+		public IActionResult GetNewestProducts()
+		{
+			var result = _productService.GetNewestProducts();
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
+
+		[HttpGet("getProductsSortedByPriceAscending")]
+		public IActionResult GetProductsSortedByPriceAscending()
+		{
+			var result = _productService.GetProductsSortedByPriceAscending();
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
+
+		[HttpGet("getProductsSortedByPriceDescending")]
+		public IActionResult GetProductsSortedByPriceDescending()
+		{
+			var result = _productService.GetProductsSortedByPriceDescending();
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
+
+		[HttpGet("getProductsByCategoryWithPagination")]
+		public IActionResult GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
+		{
+			var result = _productService.GetProductsByCategoryWithPagination(categoryId, pageNumber, pageSize);
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
 
 		[HttpDelete("delete:{id:int:min(1)}")]
 		public IActionResult Delete(int id)

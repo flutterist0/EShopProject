@@ -84,6 +84,8 @@ namespace Business.Concrete
 			else return new ErrorDataResult<List<Product>>("xeta baş verdi");
 		}
 
+
+
 		public IDataResult<ProductDetailDto> GetProductDetails(int productId)
 		{
 			var product = _productDal.Get(p => p.Id == productId && p.IsDelete == false);
@@ -92,14 +94,10 @@ namespace Business.Concrete
 			{
 				return new ErrorDataResult<ProductDetailDto>("Product not found");
 			}
-
-			// Kategoriyanın adını ayrıca əldə etmək
 			var category = _categoryDal.Get(c => c.Id == product.CategoryId);
 
-			// Məhsulun şəkillərini ayrıca əldə etmək
 			var productImages = _productImageDal.GetAll(pi => pi.ProductId == product.Id).ToList();
 
-			// Detalları yeni bir DTO'ya map et
 			var productDetailsDto = new ProductDetailDto
 			{
 				Name = product.Name,
@@ -107,8 +105,8 @@ namespace Business.Concrete
 				DiscountPrice = product.IsDiscount ? product.DiscountPrice : null,
 				Description = product.Description,
 				Spesification = product.Spesification,
-				CategoryName = category?.Name,  // Əgər kategoriya varsa
-				Images = productImages.Select(img => img.ImageUrl).ToList() // Şəkillərin siyahısı
+				CategoryName = category?.Name, 
+				Images = productImages.Select(img => img.ImageUrl).ToList()
 			};
 
 			return new SuccessDataResult<ProductDetailDto>(productDetailsDto);
@@ -125,9 +123,169 @@ namespace Business.Concrete
 				return new ErrorDataResult<List<ProductListDto>>("xeta bas verdi");
 		}
 
+		public IDataResult<List<ProductToCategoryListDto>> GetProductsByCategory(int categoryId)
+		{
+			var products = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false).ToList();
+			if (products == null || products.Count == 0)
+			{
+				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found for this category.");
+			}
+
+			var productListDto = products.Select(p =>
+			{
+				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl?? "defaultimage-url"; ;
+
+				return new ProductToCategoryListDto
+				{
+					Name = p.Name,
+					Price = p.Price,
+					IsDiscount = p.IsDiscount,
+					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+					ImageUrl = firstImageUrl 
+				};
+			}).ToList();
+
+
+			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+		}
+
+		public IDataResult<List<ProductToCategoryListDto>> GetNewestProducts()
+		{
+			var products = _productDal.GetAll(p => p.IsDelete == false)
+							 .OrderByDescending(p => p.CreatedAt)
+							 .ToList();
+
+			if (products == null || products.Count == 0)
+			{
+				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+			}
+
+			var productListDto = products.Select(p =>
+			{
+				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl?? "defaultimage-url"; ;
+
+				return new ProductToCategoryListDto
+				{
+					Name = p.Name,
+					Price = p.Price,
+					IsDiscount = p.IsDiscount,
+					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+					ImageUrl = firstImageUrl 
+				};
+			}).ToList();
+
+			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+		}
+
 		public IResult Update(ProductUpdateDto productUpdateDto)
 		{
 			throw new NotImplementedException();
+
+		}
+
+		public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceAscending()
+		{
+			var products = _productDal.GetAll(p => p.IsDelete == false)
+							  .OrderBy(p => p.IsDiscount ? p.DiscountPrice : p.Price)
+							  .ToList();
+
+			if (products == null || products.Count == 0)
+			{
+				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+			}
+
+			var productListDto = products.Select(p =>
+			{
+				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl??"defaultimage-url";
+
+				return new ProductToCategoryListDto
+				{
+					Name = p.Name,
+					Price = p.IsDiscount ? p.DiscountPrice : p.Price, 
+					IsDiscount = p.IsDiscount,
+					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+					ImageUrl = firstImageUrl
+				};
+			}).ToList();
+
+			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+		}
+
+		public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceDescending()
+		{
+			var products = _productDal.GetAll(p => p.IsDelete == false)
+							 .OrderByDescending(p => p.IsDiscount ? p.DiscountPrice : p.Price)
+							 .ToList();
+
+			if (products == null || products.Count == 0)
+			{
+				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+			}
+
+			var productListDto = products.Select(p =>
+			{
+				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url";
+
+				return new ProductToCategoryListDto
+				{
+					Name = p.Name,
+					Price = p.IsDiscount ? p.DiscountPrice : p.Price, 
+					IsDiscount = p.IsDiscount,
+					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+					ImageUrl = firstImageUrl
+				};
+			}).ToList();
+
+			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+		}
+
+		public IDataResult<PagedResult<ProductToCategoryListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
+		{
+			var totalProducts = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false).Count();
+
+			var products = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false)
+									  .OrderBy(p => p.Name)
+									  .Skip((pageNumber - 1) * pageSize)
+									  .Take(pageSize)
+									  .ToList();
+
+			if (products == null || products.Count == 0)
+			{
+				return new ErrorDataResult<PagedResult<ProductToCategoryListDto>>("No products found for this category.");
+			}
+
+			var productListDto = products.Select(p =>
+			{
+				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "default-image-url";
+
+				return new ProductToCategoryListDto
+				{
+					Name = p.Name,
+					Price = p.IsDiscount ? p.DiscountPrice : p.Price,
+					IsDiscount = p.IsDiscount,
+					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+					ImageUrl = firstImageUrl
+				};
+			}).ToList();
+
+			var pagedResult = new PagedResult<ProductToCategoryListDto>
+			{
+				Items = productListDto,
+				TotalCount = totalProducts,
+				PageNumber = pageNumber,
+				PageSize = pageSize,
+				TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize)
+			};
+
+			return new SuccessDataResult<PagedResult<ProductToCategoryListDto>>(pagedResult, "Products retrieved successfully.");
+		}
+	}
+}
 			//// Mevcut ürünü ID'si ile veritabanından bul
 			//var existingProduct = _productDal.Get(p => p.Id == productUpdateDto.ProductId);
 			//if (existingProduct == null)
@@ -167,7 +325,3 @@ namespace Business.Concrete
 			//_productDal.Update(existingProduct);
 
 			//return new SuccessResult("Product updated successfully");
-		}
-
-	}
-}

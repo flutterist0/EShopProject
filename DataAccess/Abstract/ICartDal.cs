@@ -10,5 +10,6 @@ namespace DataAccess.Abstract
 {
 	public interface ICartDal:IBaseRepository<Cart>
 	{
+		Cart GetCartByUserId(int userId);
 	}
 }

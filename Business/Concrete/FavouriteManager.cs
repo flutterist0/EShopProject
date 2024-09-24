@@ -48,22 +48,24 @@ namespace Business.Concrete
 			return new SuccessResult("Product favoritlerden silindi");
 		}
 
-		public IDataResult<List<FavouriteDto>> GetAllFavorites(int userId)
+		public IDataResult<List<FavouriteGetAllDto>> GetAllFavorites(int userId)
 		{
 			var favorites = _favouriteDal.GetAllFavoritesWithProductAndImages(userId);
 
 			if (favorites == null || !favorites.Any())
 			{
-				return new ErrorDataResult<List<FavouriteDto>>("Favourite product yoxdu");
+				return new ErrorDataResult<List<FavouriteGetAllDto>>("Favourite product yoxdu");
 			}
-			var favoriteDtos = favorites.Select(f => new FavouriteDto
+			var favoriteDtos = favorites.Select(f => new FavouriteGetAllDto
 			{
 				ProductName = f.Product.Name,
 				Price = f.Product.Price,
 				ImageUrl = f.Product.ProductImages.FirstOrDefault()?.ImageUrl ?? "",
-				Quantity = f.Quantity 
+				Quantity = f.Quantity,
+				DiscountPrice = f.Product.DiscountPrice,
+				IsDiscount = f.Product.IsDiscount,
 			}).ToList();
-			return new SuccessDataResult<List<FavouriteDto>>(favoriteDtos);
+			return new SuccessDataResult<List<FavouriteGetAllDto>>(favoriteDtos);
 		}
 
 

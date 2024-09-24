@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.Dto.ProductDtos;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,14 @@ namespace DataAccess.Concrete.EF
 						 .FirstOrDefault(),
 						 };
 			return result.ToList();
+		}
+
+		public Product GetById(int productId)
+		{
+			AppDbContext appDbContext = new();
+			return appDbContext.Products
+				.Include(p => p.ProductImages) 
+				.FirstOrDefault(p => p.Id == productId);
 		}
 	}
 }

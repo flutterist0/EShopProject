@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace DataAccess.Concrete.EF
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlServer(@"Server=DESKTOP-K0V6ESA\SQLEXPRESS;Database=FinalProjectDb;Trusted_Connection=true;TrustServerCertificate=true");
-
-		}
+            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            //optionsBuilder.EnableSensitiveDataLogging();
+        }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Cart> Carts { get; set; }
-        public DbSet<Category> Categories { get; set; }
+		public DbSet<CartItem> CartItems { get; set; }
+		public DbSet<Category> Categories { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ContactForm> ContactForms { get; set; }
         public DbSet<Country> Countries { get; set; }
