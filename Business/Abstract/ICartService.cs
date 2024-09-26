@@ -14,5 +14,7 @@ namespace Business.Abstract
 		IResult AddCart(int productId, int userId, int quantity);
 		IResult DeleteCart(int userId, int productId);
 		IDataResult<List<CartItemDto>> GetAllCarts(int userId);
-	}
+		IDataResult<CheckoutDto> GetCheckoutDetails(int userId);
+
+    }
 }

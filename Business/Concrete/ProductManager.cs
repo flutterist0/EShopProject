@@ -37,6 +37,8 @@ namespace Business.Concrete
 				IsFeatured = productAddDto.IsFeatured,
 				CreatedAt = DateTime.Now,
 				CategoryId = productAddDto.CategoryId,
+				IsDelivery = productAddDto.IsDelivery,	
+				ShippingCost = productAddDto.ShippingCost,	
 				ProductImages = new List<ProductImage>()
 			};
 			_productDal.Add(newProduct);
@@ -200,7 +202,8 @@ namespace Business.Concrete
 			existingProduct.CategoryId = productUpdateDto.CategoryId;
 			existingProduct.IsFeatured = productUpdateDto.IsFeatured;
 			existingProduct.Id = productUpdateDto.ProductId;
-
+			existingProduct.IsDelivery = productUpdateDto.IsDelivery;	
+			existingProduct.ShippingCost = productUpdateDto.ShippingCost;	
             _productDal.Update(existingProduct);
 
             // Silinməli olan şəkilləri sil

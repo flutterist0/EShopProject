@@ -29,6 +29,7 @@ namespace DataAccess.Concrete.EF
 							 Name = p.Name,
 							 Price = p.Price,
 							 DiscountPrice = p.DiscountPrice,
+							 IsDelivery = p.IsDelivery,
 							 IsDiscount = p.IsDiscount,
 							 IsFeatured = p.IsFeatured,
 							 ImageUrl = appDbContext.ProductImages

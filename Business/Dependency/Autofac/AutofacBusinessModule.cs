@@ -76,8 +76,11 @@ namespace Business.Dependency.Autofac
 			builder.RegisterType<EfCartDal>().As<ICartDal>().SingleInstance();
 			builder.RegisterType<CartManager>().As<ICartService>().SingleInstance();
 
+            builder.RegisterType<EfOrderDal>().As<IOrderDal>().SingleInstance();
+            builder.RegisterType<OrderManager>().As<IOrderService>().SingleInstance();
 
-			builder.RegisterType<AppDbContext>().As<AppDbContext>().SingleInstance();
+
+            builder.RegisterType<AppDbContext>().As<AppDbContext>().SingleInstance();
 			builder.RegisterType<AddPhotoHelper>().As<IAddPhotoHelperService>().SingleInstance();
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()

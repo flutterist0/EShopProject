@@ -16,8 +16,10 @@
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>DiscountPrice</th>
+                <th>IsDelivery</th>
                 <th>IsDicount</th>
                 <th>IsFeatured</th>
+
                 <th>Actions</th>
 
             </tr>
@@ -30,6 +32,7 @@
                     <td>@product.Name</td>
                     <td>@product.Price</td>
                     <td>@product.DiscountPrice</td>
+                    <td>@(product.IsDelivery ? "Yes" : "No")</td>
                     <td>@(product.IsDiscount ? "Yes" : "No")</td>
                     <td>@(product.IsFeatured ? "Yes" : "No")</td>
                     <td>

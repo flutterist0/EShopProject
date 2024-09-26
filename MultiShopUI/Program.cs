@@ -1,8 +1,9 @@
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Business.Dependency.Autofac;
 using Core.Helpers.Security.Encryption;
 using Core.Helpers.Security.JWT;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,6 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login"; // Giriş yolu
+        options.LogoutPath = "/Auth/Logout"; // Çıkış yolu
+        options.ExpireTimeSpan = TimeSpan.FromDays(7); // Cookie'nin geçerlilik süresi
+        options.SlidingExpiration = true; // Cookie süresi dolmadan kullanıcı etkileşiminde sürenin uzatılması
+        options.Cookie.HttpOnly = true; // JavaScript ile erişimi engelle
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Sadece HTTPS üzerinden gönderilsin
+    });
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).ConfigureContainer<ContainerBuilder>(builder =>
 {
 	builder.RegisterModule<AutofacBusinessModule>();
@@ -22,6 +33,7 @@ builder.Services.AddAuthentication(x =>
 	x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(option =>
 {
+
 	option.TokenValidationParameters = new TokenValidationParameters()
 	{
 		ValidateIssuerSigningKey = true,
@@ -45,7 +57,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseCookiePolicy();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -56,6 +68,6 @@ app.MapControllerRoute(
 		  );
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
+	pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

@@ -31,6 +31,11 @@ namespace Core.DataAccess.Concrete
 
         }
 
+        public void DeleteRange(IEnumerable<TEntiy> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+
         public TEntiy Get(Expression<Func<TEntiy, bool>> filter)
         {
             return _context.Set<TEntiy>().SingleOrDefault(filter);
@@ -45,10 +50,25 @@ namespace Core.DataAccess.Concrete
 		    => _context.SaveChanges();
 
 		public void Update(TEntiy entity)
-        {   
-            _context.Update(entity);
-            _context.SaveChanges();
+        {
+            var entityType = typeof(TEntiy);
+            var idProperty = entityType.GetProperty("Id");
+            if (idProperty != null)
+            {
+                var idValue = idProperty.GetValue(entity);
+                var model = _context.Set<TEntiy>().Find(idValue);
+                if (model != null)
+                {
+                    _context.Entry(model).State = EntityState.Detached;
+                    _context.Entry(entity).State = EntityState.Modified;
 
-		}
+                    _context.SaveChanges();
+                }
+            }
+            //_context.Update(entity);
+            //_context.SaveChanges();
+
+        }
+   
     }
 }

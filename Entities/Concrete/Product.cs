@@ -12,9 +12,11 @@ namespace Entities.Concrete
         public string Name { get; set; }
 		public string Description { get; set; }
         public string Spesification { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         public bool IsDiscount { get; set; }
-        public decimal DiscountPrice { get; set; }
+        public decimal? DiscountPrice { get; set; }
+        public bool IsDelivery { get; set; }
+        public decimal? ShippingCost { get; set; }
         public int Stock { get; set; }
         public int Quantity { get; set; }
         public bool IsFeatured { get; set; }

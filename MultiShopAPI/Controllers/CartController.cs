@@ -44,5 +44,18 @@ namespace EShopAPI.Controllers
 			else
 				return BadRequest(result);
 		}
-	}
+
+        [HttpGet("getCheckoutDetails:{userId:int:min(1)}")]
+        public IActionResult GetCheckoutDetails(int userId)
+        {
+
+            var result = _cartService.GetCheckoutDetails(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+                return BadRequest(result);
+        }
+    }
 }
