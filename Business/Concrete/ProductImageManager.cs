@@ -30,5 +30,10 @@ namespace Business.Concrete
 			_productImageDal.Add(productImage);
 			return new SuccessResult("Elave olundu");
 		}
-	}
+
+        public List<ProductImage> GetProductImages(int productId)
+        {
+            return _productImageDal.GetAll(pi => pi.ProductId == productId && pi.IsDelete==false);
+        }
+    }
 }

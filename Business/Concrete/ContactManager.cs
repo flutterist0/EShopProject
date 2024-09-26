@@ -65,7 +65,7 @@ namespace Business.Concrete
 			updateContact.PhoneNumber = contact.PhoneNumber;	
 			updateContact.Email = contact.Email;	
 			updateContact.Description = contact.Description;	
-			_contactDal.Update(contact);
+			_contactDal.Update(updateContact);
 			return new SuccessResult();
 		}
 	}

@@ -1,0 +1,48 @@
+﻿@using Entities.Dto.ProductDtos
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ProductListDto>
+<h2>Product List</h2>
+<div style="text-align: right; margin-bottom: 15px;">
+    <a href="@Url.Action("AddProduct", "Products")" class="btn btn-primary">Add Product</a>
+</div>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>DiscountPrice</th>
+                <th>IsDicount</th>
+                <th>IsFeatured</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.ProductId</td>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>@product.DiscountPrice</td>
+                    <td>@(product.IsDiscount ? "Yes" : "No")</td>
+                    <td>@(product.IsFeatured ? "Yes" : "No")</td>
+                    <td>
+                        <a href="@Url.Action("EditProduct","Products", new { id = product.ProductId })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("Delete","Products", new { id = product.ProductId })" class="btn btn-danger">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No products found.</p>
+}

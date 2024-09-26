@@ -38,7 +38,7 @@ namespace Business.Concrete
 			if (result != null)
 			{
 				deleteCategory = result;
-
+				deleteCategory.IsDelete = true;
 				_categoryDal.Delete(deleteCategory);
 				return new SuccessResult("deleted");
 			}
@@ -68,7 +68,7 @@ namespace Business.Concrete
 			var updateCategory = _categoryDal.Get(a => a.Id == id && a.IsDelete == false);
 			updateCategory.Name = category.Name;
 			updateCategory.ImageUrl = category.ImageUrl;
-			_categoryDal.Update(category);
+			_categoryDal.Update(updateCategory);
 			return new SuccessResult();
 		}
 	}

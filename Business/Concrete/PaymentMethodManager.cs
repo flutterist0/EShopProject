@@ -62,7 +62,7 @@ namespace Business.Concrete
 		{
 			var updatePaymentMethod = _paymentMethodDal.Get(a => a.Id == id && a.IsDelete == false);
 			updatePaymentMethod.MethodName = paymentMethod.MethodName;
-			_paymentMethodDal.Update(paymentMethod);
+			_paymentMethodDal.Update(updatePaymentMethod);
 			return new SuccessResult();
 		}
 	}

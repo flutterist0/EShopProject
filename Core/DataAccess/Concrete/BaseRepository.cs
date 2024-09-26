@@ -33,7 +33,7 @@ namespace Core.DataAccess.Concrete
 
         public TEntiy Get(Expression<Func<TEntiy, bool>> filter)
         {
-            return _context.Set<TEntiy>().AsNoTracking().SingleOrDefault(filter);
+            return _context.Set<TEntiy>().SingleOrDefault(filter);
         }
 
         public List<TEntiy> GetAll(Expression<Func<TEntiy, bool>> filter = null)
@@ -41,10 +41,12 @@ namespace Core.DataAccess.Concrete
             return filter !=null? _context.Set<TEntiy>().Where(filter).ToList() : _context.Set<TEntiy>().ToList();
         }
 
-        public void Update(TEntiy entity)
-        {
-            var modifyEntity = _context.Entry(entity);
-            modifyEntity.State = EntityState.Modified;
+		public int SaveChanges()
+		    => _context.SaveChanges();
+
+		public void Update(TEntiy entity)
+        {   
+            _context.Update(entity);
             _context.SaveChanges();
 
 		}

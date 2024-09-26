@@ -6,6 +6,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
 using Entities.Dto.ProductDtos;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -179,13 +180,52 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
-		public IResult Update(ProductUpdateDto productUpdateDto)
-		{
-			throw new NotImplementedException();
+        public IResult Update(ProductUpdateDto productUpdateDto, List<int> deleteImageIds)
+        {
+            var existingProduct = _productDal.Get(p => p.Id == productUpdateDto.ProductId && p.IsDelete == false);
 
-		}
+            if (existingProduct == null)
+            {
+                return new ErrorResult("Product not found");
+            }
 
-		public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceAscending()
+            // Məhsul məlumatlarını yenilə
+            existingProduct.Name = productUpdateDto.Name;
+            existingProduct.Description = productUpdateDto.Description;
+            existingProduct.Price = productUpdateDto.Price;
+            existingProduct.Stock = productUpdateDto.Stock;
+            existingProduct.Quantity = productUpdateDto.Quantity;
+            existingProduct.IsDiscount = productUpdateDto.IsDiscount;
+            existingProduct.DiscountPrice = productUpdateDto.IsDiscount ? productUpdateDto.DiscountPrice : 0;
+			existingProduct.CategoryId = productUpdateDto.CategoryId;
+			existingProduct.IsFeatured = productUpdateDto.IsFeatured;
+			existingProduct.Id = productUpdateDto.ProductId;
+
+            _productDal.Update(existingProduct);
+
+            // Silinməli olan şəkilləri sil
+            foreach (var imageId in deleteImageIds)
+            {
+                var image = _productImageDal.Get(i => i.Id == imageId);
+                _productImageDal.Delete(image);
+            }
+
+            // Yeni şəkilləri əlavə et
+            foreach (var imageFile in productUpdateDto.ProductImages)
+            {
+                var productImageAddDto = new ProductImageAddDto
+                {
+                    ProductId = existingProduct.Id,
+                    Image = imageFile
+                };
+                _productImageService.Add(productImageAddDto);
+            }
+
+            return new SuccessResult("Product updated successfully");
+        }
+
+
+        public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceAscending()
 		{
 			var products = _productDal.GetAll(p => p.IsDelete == false)
 							  .OrderBy(p => p.IsDiscount ? p.DiscountPrice : p.Price)
@@ -284,44 +324,8 @@ namespace Business.Concrete
 
 			return new SuccessDataResult<PagedResult<ProductToCategoryListDto>>(pagedResult, "Products retrieved successfully.");
 		}
-	}
+
+   
+    }
 }
-			//// Mevcut ürünü ID'si ile veritabanından bul
-			//var existingProduct = _productDal.Get(p => p.Id == productUpdateDto.ProductId);
-			//if (existingProduct == null)
-			//{
-			//	return new ErrorResult("Product not found");
-			//}
-
-			//// Ürün bilgilerini güncelle
-			//existingProduct.Name = productUpdateDto.Name;
-			//existingProduct.Description = productUpdateDto.Description;
-			//existingProduct.Spesification = productUpdateDto.Spesification;
-			//existingProduct.Price = productUpdateDto.Price;
-			//existingProduct.IsDiscount = productUpdateDto.IsDiscount;
-			//existingProduct.DiscountPrice = productUpdateDto.DiscountPrice;
-			//existingProduct.Stock = productUpdateDto.Stock;
-			//existingProduct.Quantity = productUpdateDto.Quantity;
-			//existingProduct.IsFeatured = productUpdateDto.IsFeatured;
-			//existingProduct.CategoryId = productUpdateDto.CategoryId;
-
-			//// Yeni resimler varsa güncelle
-			//if (productUpdateDto.ProductImages != null && productUpdateDto.ProductImages.Count > 0)
-			//{
-			//	foreach (var image in productUpdateDto.ProductImages)
-			//	{
-			//		var guid = Guid.NewGuid() + "-" + image.FileName;
-			//		_addPhotoHelperService.AddImage(image, guid);
-			//		existingProduct.ProductImages.Add(new ProductImage
-			//		{
-			//			ProductId = existingProduct.Id,
-			//			ImageUrl = "/images/" + guid,
-			//			IsFeatuerd = false // veya istediğiniz başka bir değer
-			//		});
-			//	}
-			//}
-
-			//// Ürünü güncelle
-			//_productDal.Update(existingProduct);
-
-			//return new SuccessResult("Product updated successfully");
+		

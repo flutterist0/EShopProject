@@ -1,7 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Core.Helpers.Results.Abstract;
 using Entities.Concrete;
-using Entities.Dto;
+using Entities.Dto.ServiceDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-	public interface IServiceService
+    public interface IServiceService
 	{
 		IResult Add(ServiceAddDto serviceDto);
-		IResult Update(Service service, int id);
+		IResult Update(ServiceUpdateDto serviceUpdateDto, int id);
 		IResult Delete(int id);
 		IDataResult<List<Service>> GetAll();
 		IDataResult<Service> Get(int id);

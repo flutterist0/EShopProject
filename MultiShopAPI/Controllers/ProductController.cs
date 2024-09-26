@@ -113,13 +113,14 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 		}
 		//[HttpPut]
-		//public IActionResult UpdateProduct(ProductUpdateDto productUpdateDto)
+		//public IActionResult UpdateProduct(ProductUpdateDto productUpdateDto, List<int> deleteImageIds)
 		//{
-		//	var result = _productService.Update(productUpdateDto);
+		//	var result = _productService.Update(productUpdateDto, deleteImageIds);
 		//	if (result.Success)
 		//	{
 		//		return Ok(result);
-		//	}else
+		//	}
+		//	else
 		//		return BadRequest(result);
 		//}
 	}

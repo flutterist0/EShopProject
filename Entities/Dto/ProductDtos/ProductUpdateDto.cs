@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Abstract;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,18 @@ namespace Entities.Dto.ProductDtos
 {
     public class ProductUpdateDto : IDto
     {
-        public int ProductId { get; set; }
-        public string Name { get; set; } // Ürün adı
-        public string Description { get; set; } // Ürün açıklaması
-        public string Spesification { get; set; } // Ürün spesifikasyonu
-        public decimal Price { get; set; } // Ürün fiyatı
-        public bool IsDiscount { get; set; } // İndirim durumu
-        public decimal DiscountPrice { get; set; } // İndirimli fiyat
-        public int Stock { get; set; } // Stok durumu
-        public int Quantity { get; set; } // Ürün miktarı
-        public bool IsFeatured { get; set; } // Öne çıkan ürün durumu
-        public int CategoryId { get; set; } // Ürün kategorisi ID'si
-        public List<IFormFile> ProductImages { get; set; } // Ürün resimleri
+        public int ProductId { get; set; } 
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Spesification { get; set; }
+        public decimal Price { get; set; }
+        public bool IsDiscount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public int Stock { get; set; }
+        public int Quantity { get; set; }
+        public bool IsFeatured { get; set; }
+        public int CategoryId { get; set; }
+        public List<IFormFile> ProductImages { get; set; }
+        public List<ProductImage> ExistingImages { get; set; }
     }
 }

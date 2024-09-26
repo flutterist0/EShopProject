@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(swagger =>
 	swagger.SwaggerDoc("v1", new OpenApiInfo
 	{
 		Version = "v1",
-		Title = "JWT Token Authentication API",
+		Title = "EShop API",
 		Description = ".NET 8 Web API"
 	});
 	// To Enable authorization using Swagger (JWT)

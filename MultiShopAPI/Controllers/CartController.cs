@@ -6,7 +6,7 @@ namespace EShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController(ICartService cartService) : ControllerBase
+    public class CartController(ICartService cartService,IHttpContextAccessor context) : ControllerBase
     {
         private readonly ICartService _cartService = cartService;
 		[HttpPost]
@@ -23,6 +23,7 @@ namespace EShopAPI.Controllers
 		[HttpGet("getAll:{userId:int:min(1)}")]
 		public IActionResult GetAll(int userId)
 		{
+			
 			var result = _cartService.GetAllCarts(userId);
 			if (result.Success)
 			{

@@ -62,7 +62,7 @@ namespace Business.Concrete
 		{
 			var updateCountry = _countryDal.Get(a => a.Id == id && a.IsDelete == false);
 			updateCountry.Name = country.Name;
-			_countryDal.Update(country);
+			_countryDal.Update(updateCountry);
 			return new SuccessResult();
 		}
 	}

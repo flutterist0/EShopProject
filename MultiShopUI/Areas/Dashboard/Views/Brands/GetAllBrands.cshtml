@@ -1,0 +1,43 @@
+﻿@using Entities.Concrete
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<Brand>
+<h2>Service List</h2>
+<div style="text-align: right; margin-bottom: 15px;">
+    <a href="@Url.Action("AddBrands", "Brands")" class="btn btn-primary">Add Brand</a>
+</div>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Brand ID</th>
+                <th>Name</th>
+                <th>IsFeatured</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in Model)
+            {
+                <tr>
+                    <td>@service.Id</td>
+                    <td>@service.Name</td>
+                    <td>@(service.IsFeatured ? "Yes" : "No")</td>
+                    <td>
+                        <a href="@Url.Action("EditBrands","Brands", new { id = service.Id })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("Delete","Brands", new { id = service.Id })" class="btn btn-danger">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No services found.</p>
+}

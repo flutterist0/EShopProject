@@ -1,0 +1,37 @@
+﻿@model Entities.Dto.ServiceDtos.ServiceUpdateDto
+
+<h2>Edit Service</h2>
+
+<form asp-area="Dashboard" asp-controller="Services" asp-action="UpdateService" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ServiceId" />
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsFeatured"></label>
+        <input asp-for="IsFeatured" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label for="Image">Upload Image</label>
+        <input type="file" asp-for="Image" class="form-control" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="form-group">
+            <label>Current Image:</label><br />
+            <img src="~/images/@Model.ImageUrl" alt="Current Image" style="max-width: 200px; max-height: 200px;" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Update Service</button>
+</form>

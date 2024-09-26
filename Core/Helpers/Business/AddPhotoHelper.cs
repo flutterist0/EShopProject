@@ -51,7 +51,6 @@ public class AddPhotoHelper : IAddPhotoHelperService
 		var fileName = guid;
 		var wwwFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
 
-		// Yolu yoxlayın və lazım gələrsə qovluğu yaradın
 		if (!Directory.Exists(wwwFolder))
 		{
 			Directory.CreateDirectory(wwwFolder);

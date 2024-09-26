@@ -63,7 +63,7 @@ namespace Business.Concrete
 			var updateOperationClaim = _operationClaimDal.Get(a => a.Id == id);
 			updateOperationClaim.Name = operationClaim.Name;
 
-			_operationClaimDal.Update(operationClaim);
+			_operationClaimDal.Update(updateOperationClaim);
 			return new SuccessResult();
 		}
 	}

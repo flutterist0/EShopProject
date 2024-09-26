@@ -69,7 +69,7 @@ namespace Business.Concrete
 			var updateSocialNetwork = _socialNetworkDal.Get(a => a.Id == id && a.IsDelete == false);
 			updateSocialNetwork.Name = socialNetwork.Name;
 			updateSocialNetwork.ImageUrl = socialNetwork.ImageUrl;
-			_socialNetworkDal.Update(socialNetwork);
+			_socialNetworkDal.Update(updateSocialNetwork);
 			return new SuccessResult();
 		}
 	}

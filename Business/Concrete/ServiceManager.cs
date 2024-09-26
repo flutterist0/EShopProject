@@ -7,6 +7,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
 using Entities.Dto;
+using Entities.Dto.ServiceDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace Business.Concrete
 			{
 				Title = serviceDto.Title,
 				Description = serviceDto.Description,
+				IsFeatured = serviceDto.IsFeatured,
 				ImageUrl = "/images/" + guid,
 			};
 			_serviceDal.Add(service);
@@ -41,7 +43,7 @@ namespace Business.Concrete
 			if (result != null)
 			{
 				deleteService = result;
-
+				deleteService.IsDelete = true;
 				_serviceDal.Delete(deleteService);
 				return new SuccessResult("deleted");
 			}
@@ -66,14 +68,25 @@ namespace Business.Concrete
 			else return new ErrorDataResult<List<Service>>("xeta baş verdi");
 		}
 
-		public IResult Update(Service service, int id)
+		public IResult Update(ServiceUpdateDto serviceUpdateDto, int id)
 		{
-			var updateService = _serviceDal.Get(a => a.Id == id&&a.IsDelete==false);
-			updateService.Title= service.Title;
-			updateService.Description= service.Description;
-			updateService.ImageUrl= service.ImageUrl;
+			var updateService = _serviceDal.Get(a => a.Id == id);
+			updateService.Title= serviceUpdateDto.Title;
+			updateService.Description= serviceUpdateDto.Description;
+            if (serviceUpdateDto.Image!=null)
+            {// Yeni GUID yaradın
+                var guid = Guid.NewGuid().ToString() + Path.GetExtension(serviceUpdateDto.Image.FileName);
 
-			_serviceDal.Update(service);
+                // Şəkili yükləyin
+                _addPhotoHelperService.AddImage(serviceUpdateDto.Image, guid);
+
+                // Yüklənmiş şəkilin URL-nə görə servisi güncəlləyin
+                updateService.ImageUrl = $"/images/{guid}";
+
+            }
+        
+
+			_serviceDal.Update(updateService);
 			return new SuccessResult();
 		}
 	}

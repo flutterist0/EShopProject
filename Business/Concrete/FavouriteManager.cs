@@ -15,21 +15,18 @@ namespace Business.Concrete
 	public class FavouriteManager(IFavouriteDal favouriteDal) : IFavouriteService
 	{
 		private readonly IFavouriteDal _favouriteDal = favouriteDal;
-		public IResult AddFavourite(int productId, int userId, int quantity)
+		public IResult AddFavourite(int productId, int userId)
 		{
 			var existingFavorite = _favouriteDal.Get(f => f.ProductId == productId && f.UserId == userId);
 
 			if (existingFavorite != null)
 			{
-				existingFavorite.Quantity += quantity;
-				_favouriteDal.Update(existingFavorite);
-				return new SuccessResult("Product quantity updated in favorites");
+				return new SuccessResult("Product is in favorites");
 			}
 			var favorite = new Favourite
 			{
 				ProductId = productId,
-				UserId = userId,
-				Quantity = quantity 
+				UserId = userId
 			};
 			_favouriteDal.Add(favorite);
 			return new SuccessResult("Product added to favorites");

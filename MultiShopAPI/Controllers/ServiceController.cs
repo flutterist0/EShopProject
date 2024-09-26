@@ -1,12 +1,12 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
-using Entities.Dto;
+using Entities.Dto.ServiceDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShopAPI.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ServiceController(IServiceService serviceService) : ControllerBase
 	{
@@ -48,7 +48,7 @@ namespace EShopAPI.Controllers
 		}
 
 		[HttpPut]
-		public IActionResult Update(Service service, int id)
+		public IActionResult Update(ServiceUpdateDto service, int id)
 		{
 			var result = _serviceService.Update(service, id);
 			if (result.Success)

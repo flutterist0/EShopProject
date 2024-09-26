@@ -10,9 +10,9 @@ namespace EShopAPI.Controllers
 	{
 		private readonly IFavouriteService _favouriteService = favouriteService;
 		[HttpPost]
-		public IActionResult Add(int productId, int userId, int quantity)
+		public IActionResult Add(int productId, int userId)
 		{
-			var result = _favouriteService.AddFavourite(productId, userId, quantity);
+			var result = _favouriteService.AddFavourite(productId, userId);
             if (result.Success)
             {
 				return Ok(result);

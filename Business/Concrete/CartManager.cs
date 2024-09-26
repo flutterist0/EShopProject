@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class CartManager(ICartDal cartDal, IProductDal productDal,ICartItemDal cartItemDal) : ICartService
+	public class CartManager(ICartDal cartDal, IProductDal productDal,ICartItemDal cartItemDal, IProductImageDal productImageDal) : ICartService
 	{
 		private readonly ICartDal _cartDal = cartDal;
 		private readonly IProductDal _productDal = productDal;
 		private readonly ICartItemDal _cartItemDal = cartItemDal;
+		private readonly IProductImageDal _productImageDal = productImageDal;
 		public IResult AddCart(int productId, int userId, int quantity)
 		{
 			var product = _productDal.Get(p => p.Id == productId);
@@ -32,34 +33,24 @@ namespace Business.Concrete
 				cart = new Cart
 				{
 					UserId = userId,
-					CreatedAt = DateTime.Now,
-					CartItems = new List<CartItem>()
+					CreatedAt = DateTime.Now
 				};
 				_cartDal.Add(cart);
 
 			}
 
-			var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
-			if (cartItem != null)
-			{
-				cartItem.Quantity += quantity;
-				_cartItemDal.Update(cartItem);
 
-			}
-			else
+			var cartItem = _cartItemDal.Get(ci => ci.ProductId == productId && ci.CartId == cart.Id);
+
+			var newCart = new CartItem
 			{
-				cartItem = new CartItem
-				{
-					CartId = cart.Id,
-					ProductId = productId,
-					Quantity = quantity,
-					Price = product.IsDiscount ? product.DiscountPrice : product.Price,
-					AddedAt = DateTime.Now
-				};
-				//cart.CartItems.Add(cartItem);
-				_cartItemDal.Add(cartItem);
-			}
-			_cartDal.Update(cart);
+				CartId = cart.Id,
+				ProductId = productId,
+				Quantity = quantity,
+				Price = product.IsDiscount ? product.DiscountPrice : product.Price,
+				AddedAt = DateTime.Now
+			};
+			_cartItemDal.Add(newCart);
 			return new SuccessResult("Məhsul səbətə əlavə olundu");
 
 		}
@@ -92,14 +83,26 @@ namespace Business.Concrete
 				return new ErrorDataResult<List<CartItemDto>>("Səbət tapılmadı");
 			}
 
-			var cartItemsDto = cart.CartItems.Select(cartItem => new CartItemDto
-			{
-				ProductName = cartItem.Product.Name ?? "Məhsul yoxdur",
-				ProductImageUrl = cartItem.Product.ProductImages.FirstOrDefault().ImageUrl ?? "No Image",
-				Price = cartItem.Price,
-				Quantity = cartItem.Quantity
-			}).ToList();
-			return new SuccessDataResult<List<CartItemDto>>(cartItemsDto);
+			var items = _cartItemDal.GetAll(ci => ci.CartId == cart.Id);
+
+			var dtos = items.GroupBy(c => c.ProductId)
+				.Select(ci =>
+				{
+					var product = _productDal.Get(p => p.Id == ci.Key);
+					var productImages = _productImageDal.GetAll(pi => pi.ProductId == product.Id).ToList();
+					var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url"; ;
+					return new CartItemDto
+					{
+						ProductName = product.Name,
+						ProductImageUrl = firstImageUrl,
+						Price = product.IsDiscount ? product.DiscountPrice : product.Price,
+						Quantity = ci.Sum(c => c.Quantity)
+					};
+				}
+				
+				).ToList();
+			
+			return new SuccessDataResult<List<CartItemDto>>(dtos);
 
 		}
 	}

@@ -26,6 +26,7 @@ namespace Business.Concrete
 			Brand brand = new()
 			{
 				Name = brandDto.Name,
+				IsFeatured = brandDto.IsFeatured,
 				ImageUrl = "/images/" + guid,
 			};
 			_brandDal.Add(brand);
@@ -39,7 +40,7 @@ namespace Business.Concrete
 			if (result != null)
 			{
 				deleteBrand = result;
-
+				deleteBrand.IsDelete = true;
 				_brandDal.Delete(deleteBrand);
 				return new SuccessResult("deleted");
 			}
@@ -66,11 +67,11 @@ namespace Business.Concrete
 
 		public IResult Update(Brand brand, int id)
 		{
-			var updateBrand = _brandDal.Get(a => a.Id == id && a.IsDelete == false);
+			var updateBrand = _brandDal.Get(a => a.Id == id);
 			updateBrand.Name = brand.Name;	
 			updateBrand.ImageUrl = brand.ImageUrl;
 
-			_brandDal.Update(brand);
+			_brandDal.Update(updateBrand);
 			return new SuccessResult();
 		}
 	}

@@ -12,7 +12,7 @@ namespace Business.Abstract
     public interface IProductService
     {
         IResult Add(ProductAddDto productAddDto);
-		IResult Update(ProductUpdateDto productUpdateDto);
+		IResult Update(ProductUpdateDto productUpdateDto,List<int> deleteImageIds);
 		IResult Delete(int id);
 		IDataResult<List<Product>> GetAll();
 		IDataResult<List<ProductToCategoryListDto>> GetProductsByCategory(int categoryId);

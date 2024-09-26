@@ -1,0 +1,16 @@
+﻿@model Entities.Concrete.Product
+
+
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4" style="width: 400px;">
+        <h2 class="text-center">Məhsulu silmək istədiyinizdən əminsinizmi?</h2>
+        <h4 class="text-center">@Model.Name</h4>
+        <p class="text-center">Bu məhsulu silmək istədiyinizdən əminsiniz?</p>
+        <form asp-action="Delete" method="post" class="text-center">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Sil</button>
+            <a href="@Url.Action("GetAllProducts")" class="btn btn-secondary">İmtina et</a>
+        </form>
+    </div>
+</div>
