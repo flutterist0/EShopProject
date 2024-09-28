@@ -1,0 +1,147 @@
+﻿@using EShopUI.Models
+@using Entities.Dto
+        <!-- Breadcrumb Start -->
+@{
+    var userId = Context.Request.Cookies["userId"];
+}
+@model AccountViewModel
+<div class="breadcrumb-wrap">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">User</a></li>
+            <li class="breadcrumb-item active">My Account</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- My Account Start -->
+<div class="my-account">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link" id="orders-nav" onclick="loadContent('orders')" data-toggle="pill" href="#orders-tab"  role="tab">Orders</a>
+                        <a class="nav-link" id="payment-nav" onclick="loadContent('payment')"  data-toggle="pill" href="#payment-tab" role="tab">Payment Method</a>
+                        <a class="nav-link" id="address-nav" onclick="loadContent('address')"  data-toggle="pill" href="#address-tab" role="tab">Address</a>
+                        <a class="nav-link" id="account-nav" onclick="loadContent('account')"  data-toggle="pill" href="#account-tab" role="tab">Account Details</a>
+                        <a class="nav-link" asp-controller="Auth" asp-action="Logout" id="logoutButton">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Product</th>
+                                        <th>Date</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (Model == null || !Model.Orders.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="6" class="text-center">No orders found.</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            foreach (var order in Model.Orders)
+                                            {
+                                                <tr>
+                                                    <td>@order.ProductId</td>
+                                                    <td>@order.ProductName</td>
+                                                    <td>@order.OrderDate</td>
+                                                    <td>@order.Total </td>
+
+                                                  <td><button>View</button></td>
+
+                                                </tr>
+
+                                            }
+                                        }
+                                    }
+                                   
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="payment-tab" role="tabpanel" aria-labelledby="payment-nav">
+                        <h4>Payment Method</h4>
+                        <ul>
+                            @{
+                                foreach(var paymentMethod in  Model.PaymentMethods)
+                                {
+                                    <li>@paymentMethod.MethodName</li>
+                                }
+                            }
+
+</ul>
+                    </div>
+                    <div class="tab-pane fade" id="address-tab" role="tabpanel" aria-labelledby="address-nav">
+                        <h4>Address</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Shipping Address</h5>
+                                <p>@Model.ShippingAddresses.Street, @Model.ShippingAddresses.City, @Model.ShippingAddresses.State</p>
+                                <p>Mobile: @Model.ShippingAddresses.PhoneNumber</p>
+
+                                <button>Edit Address</button>
+                                <a  asp-controller="Account" asp-action="DeleteShippingAddress">Delete Address</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
+                        <h4>Account Details</h4>
+                        <form asp-action="UpdateUser" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input asp-for="User.FirstName" type="text" placeholder="@Model.User.FirstName">
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="User.LastName" type="text" placeholder="@Model.User.LastName">
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="User.PhoneNumber" type="text" placeholder="@Model.User.PhoneNumber">
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="User.Email" type="text" placeholder="@Model.User.Email">
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit">Update Account</button>
+                                    <br><br>
+                                </div>
+                            </div>
+                            </form>
+       
+                        <h4>Password change</h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="password" placeholder="Current Password">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" placeholder="New Password">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" placeholder="Confirm Password">
+                            </div>
+                            <div class="col-md-12">
+                                <button>Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- My Account End -->

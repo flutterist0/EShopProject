@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Dto.Auth;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Security.Claims;
@@ -14,6 +16,7 @@ namespace EShopUI.Controllers
         public IActionResult Login()
         {
             var cookieValue = Request.Cookies["UserInfo"];
+
             return View();
         }
 
@@ -30,23 +33,22 @@ namespace EShopUI.Controllers
                 {
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-                    new Claim("UserId", user.Id.ToString()) // Eğer UserId varsa ekleyin
+                    new Claim("UserId", user.Id.ToString()) 
                 };
                     var claimsIdentity = new ClaimsIdentity(userClaims, "Login");
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    // Kullanıcı bilgilerini JSON formatında serialize et
                     var userData = JsonSerializer.Serialize(user);
+                    var userId = user.Id.ToString();
                     var fullName = $"{user.FirstName} {user.LastName}";
-                    // Cookie ayarları
                     var cookieOptions = new CookieOptions
                     {
-                        Expires = DateTimeOffset.UtcNow.AddDays(7), // Cookie'nin geçerlilik süresi
-                        HttpOnly = true, // JavaScript'ten erişimi engelle
-                        Secure = true // Sadece HTTPS üzerinden gönderilsin
+                        Expires = DateTimeOffset.UtcNow.AddDays(7), 
+                        HttpOnly = true,
+                        Secure = true
                     };
-                    //ViewBag.FullName = fullName;
                     TempData["FullName"] = fullName;
-                    // Cookie oluştur
+                    Response.Cookies.Append("userId", userId, cookieOptions);
+                    Response.Cookies.Append("FullName", fullName, cookieOptions);
                     Response.Cookies.Append("UserInfo", userData, cookieOptions);
                     return RedirectToAction("Index", "Home");
                 }
@@ -60,14 +62,12 @@ namespace EShopUI.Controllers
             return View();
         }
 
-        // POST: Auth/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterDto registerDto)
         {
             if (ModelState.IsValid)
             {
-                // Kullanıcı zaten var mı kontrol et
                 var userExistsResult = _authService.UserExists(registerDto.Email);
                 if (!userExistsResult.Success)
                 {
@@ -75,7 +75,6 @@ namespace EShopUI.Controllers
                     return View(registerDto);
                 }
 
-                // Şifreyi doğrula
                 if (registerDto.Password != registerDto.RePassword)
                 {
                     ModelState.AddModelError("Password", "Şifreler eşleşmiyor.");
@@ -85,7 +84,6 @@ namespace EShopUI.Controllers
                 var result = _authService.Register(registerDto, registerDto.Password);
                 if (result.Success)
                 {
-                    // Kayıt başarılı, kullanıcıyı yönlendir
                     return RedirectToAction("Login");
                 }
                 ModelState.AddModelError("", result.Message);
@@ -93,12 +91,15 @@ namespace EShopUI.Controllers
             return View(registerDto);
         }
 
-        
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             Response.Cookies.Delete("UserInfo");
-
-            return RedirectToAction("Login","Auth");
+            Response.Cookies.Delete("FullName");
+            Response.Cookies.Delete("userId");
+            await  HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Auth");
         }
+
     }
 }
+   

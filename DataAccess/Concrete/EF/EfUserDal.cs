@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.Concrete;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,19 @@ namespace DataAccess.Concrete.EF
 						 };
 			return result.ToList();
 		}
-	}
+
+        public UserGetDto GetUserById(int userId)
+        {
+			var context = new AppDbContext();
+			var result = context.Users.Where(u => u.Id == userId).Select(u => new UserGetDto()
+			{
+				UserId = u.Id,
+				Email = u.Email,
+				FirstName = u.FirstName,
+				LastName = u.LastName,
+				PhoneNumber = u.PhoneNumber,	
+			}).FirstOrDefault();
+			return result;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 (function ($) {
     "use strict";
-    
+
+
     // Dropdown on mouse hover
     $(document).ready(function () {
         function toggleNavbarMethod() {
@@ -194,5 +195,55 @@
             $('#' + checkbox_id + '-show').slideDown();
         }
     });
+
+
+    // Logout function
+    function logout() {
+        // localStorage v? ya sessionStorage-da saxlan?lan token silinir
+        localStorage.removeItem('accessToken');
+        sessionStorage.removeItem('accessToken');
+
+        // ?stifad?çini logout s?hif?sin? yönl?ndirin
+        window.location.href = "/Auth/Logout";
+    }
+
+    // Logout button event
+    $('#logoutButton').click(function (event) {
+        event.preventDefault();
+        logout();
+    });
+
+    function loadContent(tab) {
+        var url = '';
+        switch (tab) {
+            case 'orders':
+                url = '/Account/Account'; 
+                break;
+            case 'payment':
+                url = '/Account/PaymentMethods'; 
+                break;
+            case 'address':
+                url = '/Account/ShippingAddress'; 
+                break;
+            case 'account':
+                url = '/Account/Account'; 
+                break;
+        }
+
+        if (url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    $('#contentArea').html(data); // 
+                },
+                error: function () {
+                    alert('Error loading content!');
+                }
+            });
+        }
+    }
+
+
 })(jQuery);
 

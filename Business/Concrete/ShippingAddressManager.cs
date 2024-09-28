@@ -2,6 +2,7 @@
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EF;
 using Entities.Concrete;
 using Entities.Dto;
 using System;
@@ -28,9 +29,37 @@ namespace Business.Concrete
 				ZipCode = shippingAddressAddDto.ZipCode,
 				UserId = shippingAddressAddDto.UserId,
 				CountryId = shippingAddressAddDto.CountryId,
+				Street = shippingAddressAddDto.Street,
 			};
 			_shippingAddressDal.Add(shippingAddress);
 			return new SuccessResult("Shipping address has been successfully added.");
 		}
-	}
+
+        public IResult Delete(int userId)
+        {
+            ShippingAddress deleteShippingAddress = null;
+            ShippingAddress result = _shippingAddressDal.Get(a =>  a.IsDelete == false&& a.UserId==userId);
+            if (result != null)
+            {
+                deleteShippingAddress = result;
+				deleteShippingAddress.IsDelete = true;
+                _shippingAddressDal.Delete(deleteShippingAddress);
+                return new SuccessResult("deleted");
+            }
+            else
+
+                return new ErrorResult("silinmedi");
+        }
+
+        public IDataResult<ShippingAddressGetAllDto> GetByUserIdShippingAddresses(int userId)
+        {
+            var result = _shippingAddressDal.GetAllByUserIdShipingAdresses(userId);
+			if (result != null) 
+			{ 
+				return new SuccessDataResult<ShippingAddressGetAllDto>(result);
+
+			}else
+				return new ErrorDataResult<ShippingAddressGetAllDto>(result,"Xeta");
+        }
+    }
 }

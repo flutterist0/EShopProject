@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
+using Entities.Dto;
 using Entities.Dto.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +9,10 @@ namespace EShopAPI.Controllers
 {
     [Route("api/[controller]")]
 	[ApiController]
-	public class AuthController(IAuthService authService) : ControllerBase
+	public class AuthController(IAuthService authService,IUserService userService) : ControllerBase
 	{
 		private readonly IAuthService _authService = authService;
+		private readonly IUserService _userService = userService;
 		[HttpPost("register")]
 		public ActionResult Register(RegisterDto userForRegisterDto)
 		{
@@ -45,5 +48,29 @@ namespace EShopAPI.Controllers
 			else
 				return BadRequest(result.Message);
 		}
+
+		[HttpGet("getUserByUserId")]
+		public IActionResult GetUserByUserId(int userId)
+		{
+			var result = _userService.GetById(userId);
+            if (result.Success)
+            {
+				return Ok(result);
+            }else
+				return BadRequest(result);
+        }
+
+		[HttpPut]
+		public IActionResult Update(UserUpdateDto userUpdateDto, int userId)
+		{
+			var result = _userService.Update(userUpdateDto, userId);
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
+
 	}
 }

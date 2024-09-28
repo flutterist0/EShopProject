@@ -11,5 +11,7 @@ namespace Business.Abstract
 	public interface IShippingAddressService
 	{
 		IResult Add(ShippingAddressAddDto shippingAddressAddDto);
+		IDataResult<ShippingAddressGetAllDto> GetByUserIdShippingAddresses(int userId);
+		IResult Delete(int userId);
 	}
 }

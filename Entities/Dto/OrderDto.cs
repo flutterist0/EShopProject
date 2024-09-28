@@ -15,5 +15,6 @@ namespace Entities.Dto
         public decimal? Price { get; set; }
         public int Quantity { get; set; }
         public DateTime OrderDate { get; set; }
+        public decimal? Total => Price * Convert.ToDecimal(Quantity);
     }
 }

@@ -1,11 +1,11 @@
 ﻿@using System.Text.Json
 @using Core.Entities.Concrete
+@using EShopUI.Models
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Core;
 @{
-   
+    var fullName = Context.Request.Cookies["FullName"];
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,9 +52,10 @@
                 <div class="col-md-3">
                     <div class="user">
                         <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> @TempData["FullName"]</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@fullName </a>
                             <div class="dropdown-menu">
-                                <a asp-controller="Home" asp-action="Logout" as class="dropdown-item">Logout</a>
+                                <a asp-controller="Auth" asp-action="Logout" id="logoutButton" class="dropdown-item">Logout</a>
+                                <a asp-controller="Account" asp-action="Account" class="dropdown-item">My Account</a>
                             </div>
                         </div>
                         <div class="cart">
@@ -89,7 +90,6 @@
                                 <a href="wishlist.html" class="dropdown-item">Wishlist</a>
                                 <a href="checkout.html" class="dropdown-item">Checkout</a>
                                 <a href="login.html" class="dropdown-item">Login & Register</a>
-                                <a href="my-account.html" class="dropdown-item">My Account</a>
                             </div>
                         </div>
                         <a href="contact.html" class="nav-item nav-link">Contact Us</a>
