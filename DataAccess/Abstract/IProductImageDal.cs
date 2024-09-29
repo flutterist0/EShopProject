@@ -11,6 +11,6 @@ namespace DataAccess.Abstract
 {
 	public interface IProductImageDal:IBaseRepository<ProductImage>
 	{
-		
+		public void DeleteImage(Product product,List<int> deleteIds);
 	}
 }

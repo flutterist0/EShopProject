@@ -26,6 +26,7 @@ namespace Business.Concrete
 			{
 				Name = categoryDto.Name,
 				ImageUrl = "/images/" + guid,
+				IsFeatuerd = categoryDto.IsFeatuerd,
 			};
 			_categoryDal.Add(category);
 			return new SuccessResult("Elave olundu");
@@ -63,7 +64,25 @@ namespace Business.Concrete
 			else return new ErrorDataResult<List<Category>>("xeta baş verdi");
 		}
 
-		public IResult Update(Category category, int id)
+		public IDataResult<List<CategoryWithProductsDto>> GetAllCategoriesWithProducts()
+		{
+			var result = _categoryDal.GetAllCategoriesWithProducts();
+            if (result.Count>0)
+            {
+				return new SuccessDataResult<List<CategoryWithProductsDto>>(result);
+            }else
+				return new ErrorDataResult<List<CategoryWithProductsDto>>(result,"xeta");
+        }
+
+        public IDataResult<List<Category>> GetAllIsFeatured()
+        {
+            var result = _categoryDal.GetAll(c=>c.IsDelete==false&&c.IsFeatuerd==true).Take(3).ToList();
+            if (result.Count>0)
+                return new SuccessDataResult<List<Category>>(result);
+            else return new ErrorDataResult<List<Category>>("xeta baş verdi");
+        }
+
+        public IResult Update(Category category, int id)
 		{
 			var updateCategory = _categoryDal.Get(a => a.Id == id && a.IsDelete == false);
 			updateCategory.Name = category.Name;

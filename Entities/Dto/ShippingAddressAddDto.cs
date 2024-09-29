@@ -10,7 +10,8 @@ namespace Entities.Dto
 {
 	public class ShippingAddressAddDto:IDto
 	{
-		public string FirstName { get; set; }
+
+        public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
 		public string PhoneNumber { get; set; }
@@ -18,7 +19,6 @@ namespace Entities.Dto
 		public string State { get; set; }
 		public int ZipCode { get; set; }
         public string Street { get; set; }
-        public int UserId { get; set; }
 		public int CountryId { get; set; } 
 	}
 }

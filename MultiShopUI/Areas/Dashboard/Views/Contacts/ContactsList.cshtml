@@ -1,0 +1,47 @@
+﻿@using Entities.Concrete
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<Contact>
+<h2>Service List</h2>
+<div style="text-align: right; margin-bottom: 15px;">
+    <a href="@Url.Action("AddContact", "Contacts")" class="btn btn-primary">Add Contact</a>
+</div>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Contact ID</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Description</th>
+                <th>PhoneNumber</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in Model)
+            {
+                <tr>
+                    <td>@contact.Id</td>
+                    <td>@contact.Email</td>
+                    <td>@contact.Address</td>
+                    <td>@contact.Description</td>
+                    <td>@contact.PhoneNumber</td>
+
+                    <td>
+                        <a href="@Url.Action("EditContact","Contacts", new { id = contact.Id })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("Delete","Contacts", new { id = contact.Id })" class="btn btn-danger">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No contact informations found.</p>
+}

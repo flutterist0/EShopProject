@@ -11,7 +11,7 @@ namespace Business.Abstract
 {
 	public interface IFavouriteService
 	{
-		IResult AddFavourite(int productId, int userId);
+		IResult AddFavourite(int productId, int userId, int quantity);
 		IResult DeleteFavorite(int productId, int userId);
 		IDataResult<List<FavouriteGetAllDto>> GetAllFavorites(int userId);
 	}

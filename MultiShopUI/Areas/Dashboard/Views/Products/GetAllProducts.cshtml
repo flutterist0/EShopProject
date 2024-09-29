@@ -36,7 +36,7 @@
                     <td>@(product.IsDiscount ? "Yes" : "No")</td>
                     <td>@(product.IsFeatured ? "Yes" : "No")</td>
                     <td>
-                        <a href="@Url.Action("EditProduct","Products", new { id = product.ProductId })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("UpdateProduct","Products", new { id = product.ProductId })" class="btn btn-warning">Edit</a>
                         <a href="@Url.Action("Delete","Products", new { id = product.ProductId })" class="btn btn-danger">Delete</a>
 
                     </td>

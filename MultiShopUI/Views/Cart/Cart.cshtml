@@ -1,0 +1,96 @@
+﻿@model EShopUI.Models.CartVM
+@{
+    var userId = ViewData["UserId"];
+}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Products</a></li>
+            <li class="breadcrumb-item active">Cart</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Cart Start -->
+<div class="cart-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        @if (Model.CartItems == null)
+                        {
+                            <p>Sebet boşdur</p>
+                        }
+                        else
+                        {
+                            <tbody class="align-middle">
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#"><img src="@item.ProductImageUrl" alt="Image" style="width: 50px; height: 50px;"></a>
+                                        </td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Price</td>
+                                        <td>
+                                            <div class="qty">
+                                                <!-- Optionally add buttons to adjust quantity -->
+                                                <input type="text" value="@item.Quantity" readonly>
+                                            </div>
+                                        </td>
+                                        <td>@(item.Price * item.Quantity)</td>
+                                        <td>
+                                            <form asp-action="DeleteFromCart" asp-controller="Cart" method="post">
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <input type="hidden" name="userId" value="@userId" />
+                                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        }
+                      
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="coupon">
+                    <input type="text" placeholder="Coupon Code">
+                    <button>Apply Code</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="cart-summary">
+                    <div class="cart-content">
+                        <h3>Cart Summary</h3>
+                        <p>Sub Total <span>@Model.CartItems.Sum(item => item.Price * item.Quantity)</span></p>
+                        <p>Shipping Cost <span>@Model.CartItems.Sum(item=>item.ShippingCost)</span></p>
+                        <h4>Grand Total <span>@(Model.CartItems.Sum(item => item.Price * item.Quantity) + @Model.CartItems.Sum(item => item.ShippingCost))</span></h4>
+                    </div>
+                    <br/>
+                    <div >
+                     <a  asp-controller="Checkout" asp-action="Checkout"  class="btn btn-primary">Checkout</a>
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart End -->

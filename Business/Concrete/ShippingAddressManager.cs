@@ -13,11 +13,13 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class ShippingAddressManager(IShippingAddressDal shippingAddressDal) : IShippingAddressService
+	public class ShippingAddressManager(IShippingAddressDal shippingAddressDal,ICountryDal countryDal) : IShippingAddressService
 	{
 		private readonly IShippingAddressDal _shippingAddressDal = shippingAddressDal;
-		public IResult Add(ShippingAddressAddDto shippingAddressAddDto)
+		private readonly ICountryDal _countryDal = countryDal;
+		public IResult Add(ShippingAddressAddDto shippingAddressAddDto,int userId)
 		{
+
 			var shippingAddress = new ShippingAddress
 			{
 				FirstName = shippingAddressAddDto.FirstName,
@@ -27,9 +29,11 @@ namespace Business.Concrete
 				City = shippingAddressAddDto.City,
 				State = shippingAddressAddDto.State,
 				ZipCode = shippingAddressAddDto.ZipCode,
-				UserId = shippingAddressAddDto.UserId,
+				UserId = userId,
 				CountryId = shippingAddressAddDto.CountryId,
 				Street = shippingAddressAddDto.Street,
+
+
 			};
 			_shippingAddressDal.Add(shippingAddress);
 			return new SuccessResult("Shipping address has been successfully added.");

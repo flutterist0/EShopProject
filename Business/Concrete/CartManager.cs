@@ -14,13 +14,14 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class CartManager(ICartDal cartDal, IProductDal productDal,ICartItemDal cartItemDal, IProductImageDal productImageDal,IOrderDal orderDal) : ICartService
+	public class CartManager(ICartDal cartDal, IProductDal productDal,ICartItemDal cartItemDal, IProductImageDal productImageDal,IOrderDal orderDal,IShippingAddressDal shippingAddressDal) : ICartService
 	{
 		private readonly ICartDal _cartDal = cartDal;
 		private readonly IProductDal _productDal = productDal;
 		private readonly ICartItemDal _cartItemDal = cartItemDal;
 		private readonly IProductImageDal _productImageDal = productImageDal;
 		private readonly IOrderDal _orderDal = orderDal;	
+		private IShippingAddressDal _shippingAddressDal = shippingAddressDal;	
 		public IResult AddCart(int productId, int userId, int quantity)
 		{
 			var product = _productDal.Get(p => p.Id == productId);
@@ -53,6 +54,7 @@ namespace Business.Concrete
 				ProductId = productId,
 				Quantity = quantity,
 				Price = product.IsDiscount ? product.DiscountPrice : product.Price,
+				ShippingCost = product.ShippingCost,
 				AddedAt = DateTime.Now
 			};
 			_cartItemDal.Add(newCart);
@@ -67,13 +69,13 @@ namespace Business.Concrete
 				return new ErrorResult("Səbət tapılmadı");
 			}
 
-			var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+			var cartItem = _cartItemDal.Get(ci => ci.ProductId == productId);
 			if (cartItem == null)
 			{
 				return new ErrorResult("Məhsul səbətdə tapılmadı");
 			}
 			cartItem.IsDelete = true;
-			cart.CartItems.Remove(cartItem);
+			_cartItemDal.DeleteX(cartItem);
 			_cartDal.Update(cart);
 
 			return new SuccessResult("Məhsul səbətdən silindi");
@@ -87,16 +89,19 @@ namespace Business.Concrete
 				return new ErrorDataResult<List<CartItemDto>>("Səbət tapılmadı");
 			}
 
-			var items = _cartItemDal.GetAll(ci => ci.CartId == cart.Id);
+			var items = _cartItemDal.GetAll(ci => ci.CartId == cart.Id&&ci.IsDelete==false);
 
 			var dtos = items
 				.Select(ci =>
 				{
-					var product = _productDal.Get(p => p.Id == ci.ProductId);
+					var product = _productDal.Get(p => p.Id == ci.ProductId&&p.IsDelete==false);
 					var productImages = _productImageDal.GetAll(pi => pi.ProductId == product.Id).ToList();
 					var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url";
                     return new CartItemDto
 					{
+
+						ShippingCost = product.ShippingCost,
+						ProductId = product.Id,
 						ProductName = product.Name,
 						ProductImageUrl = firstImageUrl,
 						Price = product.IsDiscount ? product.DiscountPrice : product.Price,
@@ -132,10 +137,9 @@ namespace Business.Concrete
                 decimal? price = product.IsDiscount ? product.DiscountPrice ?? product.Price : product.Price;
                 decimal? totalPrice = price * ci.Quantity;
 
-                // Ümumi məbləğə əlavə etmək
                 subTotal += totalPrice??0;
 
-                // Əgər məhsulda çatdırılma haqqı varsa, onu əlavə edirik
+                
                 if (product.IsDelivery)
                 {
                     shippingCost += product.ShippingCost??0;
@@ -143,16 +147,18 @@ namespace Business.Concrete
 
                 return new ProductCheckoutDto
                 {
+					ShippingCost = shippingCost,
                     ProductName = product.Name,
                     Price = price,
                     Quantity = ci.Quantity,
-                    TotalPrice = totalPrice
+                    TotalPrice = totalPrice,
+					
                 };
             }).ToList();
 
             // GrandTotal = subTotal + shippingCost
             decimal grandTotal = subTotal + shippingCost;
-
+			var shippingAddress = _shippingAddressDal.Get(s=>s.UserId==userId);
             var checkoutDto = new CheckoutDto
             {
                 Products = productDtos,
@@ -160,36 +166,11 @@ namespace Business.Concrete
                 ShippingCost = shippingCost,
                 GrandTotal = grandTotal
             };
-            foreach (var item in items)
-            {
-                var order = new Order
-                {
-                    UserId = userId,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    Price = item.Price,
-					OrderDate = DateTime.Now,
-					
-                    // Digər sifariş atributlarını əlavə edin
-                };
-
-                _orderDal.Add(order); // Sifarişlərdə istifadə olunan repository əlavə et
-
-                // Stok yeniləmək
-                var product = _productDal.Get(p => p.Id == item.ProductId);
-                if (product != null)
-                {
-                    product.Stock -= item.Quantity; // Stokdan alınan quantity-ni çıxırıq
-                    _productDal.Update(product); // Stok yeniləmək üçün məhsulu yeniləyirik
-                }
-            }
-
-            // Səbəti boşaltmağı unutmamalıyıq, əgər tələb olunursa
-            _cartItemDal.DeleteRange(items); // Səbətdən bütün məhsulları silin
-
+  
             return new SuccessDataResult<CheckoutDto>(checkoutDto);
         }
        
 
     }
 }
+

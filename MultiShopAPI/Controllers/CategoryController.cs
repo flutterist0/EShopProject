@@ -34,6 +34,17 @@ namespace EShopAPI.Controllers
 			else
 				return BadRequest(result);
 		}
+		[HttpGet("getAllCategoriesWithProducts")]
+		public IActionResult GetAllCategoriesWithProducts()
+		{
+			var result = _categoryService.GetAllCategoriesWithProducts();
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
 
 		[HttpGet("get{id:int:min(1)}")]
 		public IActionResult Get(int id)

@@ -1,0 +1,16 @@
+﻿@model Entities.Concrete.Contact
+
+
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4" style="width: 400px;">
+        <h2 class="text-center">Brandi melumati istədiyinizdən əminsinizmi?</h2>
+        <h4 class="text-center">@Model.Address</h4>
+        <p class="text-center">Bu melumati silmək istədiyinizdən əminsiniz?</p>
+        <form asp-action="Delete" method="post" class="text-center">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Sil</button>
+            <a href="@Url.Action("ContactsList")" class="btn btn-secondary">İmtina et</a>
+        </form>
+    </div>
+</div>

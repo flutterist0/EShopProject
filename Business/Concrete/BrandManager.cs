@@ -65,6 +65,17 @@ namespace Business.Concrete
 			else return new ErrorDataResult<List<Brand>>("xeta baş verdi");
 		}
 
+		public IDataResult<List<BrandWithProductsDto>> GetAllBrandsWithProducts()
+		{
+			var result = _brandDal.GetAllBrandsWithProducts();
+			if (result.Count > 0)
+			{
+				return new SuccessDataResult<List<BrandWithProductsDto>>(result);
+			}
+			else
+				return new ErrorDataResult<List<BrandWithProductsDto>>(result, "xeta");
+		}
+
 		public IResult Update(Brand brand, int id)
 		{
 			var updateBrand = _brandDal.Get(a => a.Id == id);

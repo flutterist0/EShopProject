@@ -68,26 +68,5 @@ namespace Business.Concrete
 			else return new ErrorDataResult<List<Service>>("xeta baş verdi");
 		}
 
-		public IResult Update(ServiceUpdateDto serviceUpdateDto, int id)
-		{
-			var updateService = _serviceDal.Get(a => a.Id == id);
-			updateService.Title= serviceUpdateDto.Title;
-			updateService.Description= serviceUpdateDto.Description;
-            if (serviceUpdateDto.Image!=null)
-            {// Yeni GUID yaradın
-                var guid = Guid.NewGuid().ToString() + Path.GetExtension(serviceUpdateDto.Image.FileName);
-
-                // Şəkili yükləyin
-                _addPhotoHelperService.AddImage(serviceUpdateDto.Image, guid);
-
-                // Yüklənmiş şəkilin URL-nə görə servisi güncəlləyin
-                updateService.ImageUrl = $"/images/{guid}";
-
-            }
-        
-
-			_serviceDal.Update(updateService);
-			return new SuccessResult();
-		}
 	}
 }

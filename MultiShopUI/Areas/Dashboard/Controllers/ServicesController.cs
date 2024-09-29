@@ -90,7 +90,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
         [HttpGet("editService/{id}")]
         public IActionResult EditService(int id)
         {
-            var service = _serviceService.Get(id); // Xidmət məlumatlarını gətirin
+            var service = _serviceService.Get(id);
             if (service == null)
             {
                 return NotFound();
@@ -102,29 +102,29 @@ namespace EShopUI.Areas.Dashboard.Controllers
                 Title = service.Data.Title,
                 Description = service.Data.Description,
                 IsFeatured = service.Data.IsFeatured,
-                ImageUrl = service.Data.ImageUrl // Burada şəkil URL-sini əlavə edin
+                ImageUrl = service.Data.ImageUrl 
             };
 
             return View(serviceUpdateDto);
         }
 
-        [HttpPost("editService")]
-        public IActionResult UpdateService(ServiceUpdateDto service,int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(service);
-            }
+        //[HttpPost("editService")]
+        //public IActionResult UpdateService(ServiceUpdateDto service,int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(service);
+        //    }
 
-            var result = _serviceService.Update(service, id);
+        //    var result = _serviceService.Update(service, id);
 
-            if (!result.Success)
-            {
-                ModelState.AddModelError("", result.Message);
-                return View(service);
-            }
+        //    if (!result.Success)
+        //    {
+        //        ModelState.AddModelError("", result.Message);
+        //        return View(service);
+        //    }
 
-            return RedirectToAction("GetAllServices", "Services");
-        }
+        //    return RedirectToAction("GetAllServices", "Services");
+        //}
     }
 }

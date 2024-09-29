@@ -15,13 +15,14 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-    public class ProductManager(IProductDal productDal, IProductImageService productImageService, IAddPhotoHelperService addPhotoHelperService,ICategoryDal categoryDal,IProductImageDal productImageDal) : IProductService
+    public class ProductManager(IProductDal productDal, IProductImageService productImageService, IAddPhotoHelperService addPhotoHelperService,ICategoryDal categoryDal,IProductImageDal productImageDal,IBrandDal brandDal) : IProductService
 	{
 		private readonly IProductDal _productDal =productDal;
 		private readonly IProductImageService _productImageService = productImageService;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
 		private readonly ICategoryDal _categoryDal =categoryDal;
 		private readonly IProductImageDal _productImageDal = productImageDal;
+		private readonly IBrandDal _brandDal =brandDal;
 		public IResult Add(ProductAddDto productAddDto)
 		{
 			var newProduct = new Product()
@@ -33,7 +34,7 @@ namespace Business.Concrete
 				IsDiscount = productAddDto.IsDiscount,
 				DiscountPrice = productAddDto.DiscountPrice,
 				Stock = productAddDto.Stock,
-				Quantity = productAddDto.Quantity,
+				BrandId = productAddDto.BrandId,
 				IsFeatured = productAddDto.IsFeatured,
 				CreatedAt = DateTime.Now,
 				CategoryId = productAddDto.CategoryId,
@@ -98,11 +99,14 @@ namespace Business.Concrete
 				return new ErrorDataResult<ProductDetailDto>("Product not found");
 			}
 			var category = _categoryDal.Get(c => c.Id == product.CategoryId);
-
+			var brand = _brandDal.Get(b=>b.Id == product.BrandId);
 			var productImages = _productImageDal.GetAll(pi => pi.ProductId == product.Id).ToList();
 
 			var productDetailsDto = new ProductDetailDto
-			{
+			{ 
+				IsDiscount = product.IsDiscount,
+				BrandName = brand?.Name,
+				ProductId = product.Id,
 				Name = product.Name,
 				Price = product.Price,
 				DiscountPrice = product.IsDiscount ? product.DiscountPrice : null,
@@ -126,12 +130,12 @@ namespace Business.Concrete
 				return new ErrorDataResult<List<ProductListDto>>("xeta bas verdi");
 		}
 
-		public IDataResult<List<ProductToCategoryListDto>> GetProductsByCategory(int categoryId)
+		public IDataResult<List<ProductListDto>> GetProductsByCategory(int categoryId)
 		{
 			var products = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false).ToList();
 			if (products == null || products.Count == 0)
 			{
-				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found for this category.");
+				return new ErrorDataResult<List<ProductListDto>>("No products found for this category.");
 			}
 
 			var productListDto = products.Select(p =>
@@ -139,21 +143,24 @@ namespace Business.Concrete
 				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
 				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl?? "defaultimage-url"; ;
 
-				return new ProductToCategoryListDto
-				{
+				return new ProductListDto
+                {
 					Name = p.Name,
 					Price = p.Price,
 					IsDiscount = p.IsDiscount,
 					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
-					ImageUrl = firstImageUrl 
+					ImageUrl = firstImageUrl ,
+					IsDelivery = p.IsDelivery,
+					IsFeatured = p.IsFeatured,
+					ProductId = p.Id
 				};
 			}).ToList();
 
 
-			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
-		public IDataResult<List<ProductToCategoryListDto>> GetNewestProducts()
+		public IDataResult<List<ProductListDto>> GetNewestProducts()
 		{
 			var products = _productDal.GetAll(p => p.IsDelete == false)
 							 .OrderByDescending(p => p.CreatedAt)
@@ -161,7 +168,7 @@ namespace Business.Concrete
 
 			if (products == null || products.Count == 0)
 			{
-				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+				return new ErrorDataResult<List<ProductListDto>>("No products found.");
 			}
 
 			var productListDto = products.Select(p =>
@@ -169,17 +176,21 @@ namespace Business.Concrete
 				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
 				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl?? "defaultimage-url"; ;
 
-				return new ProductToCategoryListDto
-				{
+				return new ProductListDto
+                {
 					Name = p.Name,
 					Price = p.Price,
 					IsDiscount = p.IsDiscount,
 					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
-					ImageUrl = firstImageUrl 
+					ImageUrl = firstImageUrl ,
+					IsDelivery = p.IsDelivery,
+					IsFeatured = p.IsFeatured,
+					ProductId = p.Id,
+					
 				};
 			}).ToList();
 
-			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
         public IResult Update(ProductUpdateDto productUpdateDto, List<int> deleteImageIds)
@@ -190,13 +201,12 @@ namespace Business.Concrete
             {
                 return new ErrorResult("Product not found");
             }
-
-            // Məhsul məlumatlarını yenilə
+			
             existingProduct.Name = productUpdateDto.Name;
             existingProduct.Description = productUpdateDto.Description;
             existingProduct.Price = productUpdateDto.Price;
             existingProduct.Stock = productUpdateDto.Stock;
-            existingProduct.Quantity = productUpdateDto.Quantity;
+			existingProduct.BrandId = productUpdateDto.BrandId;
             existingProduct.IsDiscount = productUpdateDto.IsDiscount;
             existingProduct.DiscountPrice = productUpdateDto.IsDiscount ? productUpdateDto.DiscountPrice : 0;
 			existingProduct.CategoryId = productUpdateDto.CategoryId;
@@ -206,29 +216,31 @@ namespace Business.Concrete
 			existingProduct.ShippingCost = productUpdateDto.ShippingCost;	
             _productDal.Update(existingProduct);
 
-            // Silinməli olan şəkilləri sil
             foreach (var imageId in deleteImageIds)
             {
                 var image = _productImageDal.Get(i => i.Id == imageId);
-                _productImageDal.Delete(image);
+                _productImageDal.DeleteImage(existingProduct,deleteImageIds);
             }
 
-            // Yeni şəkilləri əlavə et
-            foreach (var imageFile in productUpdateDto.ProductImages)
+            if (productUpdateDto.ProductImages.Count!=null)
             {
-                var productImageAddDto = new ProductImageAddDto
+                foreach (var imageFile in productUpdateDto.ProductImages)
                 {
-                    ProductId = existingProduct.Id,
-                    Image = imageFile
-                };
-                _productImageService.Add(productImageAddDto);
+                    var productImageAddDto = new ProductImageAddDto
+                    {
+                        ProductId = existingProduct.Id,
+                        Image = imageFile
+                    };
+                    _productImageService.Add(productImageAddDto);
+                }
             }
+       
 
             return new SuccessResult("Product updated successfully");
         }
 
 
-        public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceAscending()
+        public IDataResult<List<ProductListDto>> GetProductsSortedByPriceAscending()
 		{
 			var products = _productDal.GetAll(p => p.IsDelete == false)
 							  .OrderBy(p => p.IsDiscount ? p.DiscountPrice : p.Price)
@@ -236,7 +248,7 @@ namespace Business.Concrete
 
 			if (products == null || products.Count == 0)
 			{
-				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+				return new ErrorDataResult<List<ProductListDto>>("No products found.");
 			}
 
 			var productListDto = products.Select(p =>
@@ -244,20 +256,23 @@ namespace Business.Concrete
 				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
 				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl??"defaultimage-url";
 
-				return new ProductToCategoryListDto
-				{
+				return new ProductListDto
+                {
 					Name = p.Name,
-					Price = p.IsDiscount ? p.DiscountPrice : p.Price, 
+					Price =p.Price, 
 					IsDiscount = p.IsDiscount,
-					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
-					ImageUrl = firstImageUrl
+					DiscountPrice = p.DiscountPrice,
+					ImageUrl = firstImageUrl,
+					IsFeatured = p.IsFeatured,
+					IsDelivery = p.IsDelivery,
+					ProductId = p.Id,
 				};
 			}).ToList();
 
-			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
-		public IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceDescending()
+		public IDataResult<List<ProductListDto>> GetProductsSortedByPriceDescending()
 		{
 			var products = _productDal.GetAll(p => p.IsDelete == false)
 							 .OrderByDescending(p => p.IsDiscount ? p.DiscountPrice : p.Price)
@@ -265,7 +280,7 @@ namespace Business.Concrete
 
 			if (products == null || products.Count == 0)
 			{
-				return new ErrorDataResult<List<ProductToCategoryListDto>>("No products found.");
+				return new ErrorDataResult<List<ProductListDto>>("No products found.");
 			}
 
 			var productListDto = products.Select(p =>
@@ -273,20 +288,23 @@ namespace Business.Concrete
 				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
 				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url";
 
-				return new ProductToCategoryListDto
-				{
+				return new ProductListDto
+                {
 					Name = p.Name,
-					Price = p.IsDiscount ? p.DiscountPrice : p.Price, 
+					Price = p.Price, 
 					IsDiscount = p.IsDiscount,
-					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
-					ImageUrl = firstImageUrl
-				};
+					DiscountPrice =  p.DiscountPrice ,
+					ImageUrl = firstImageUrl,
+                    IsFeatured = p.IsFeatured,
+                    IsDelivery = p.IsDelivery,
+                    ProductId = p.Id,
+                };
 			}).ToList();
 
-			return new SuccessDataResult<List<ProductToCategoryListDto>>(productListDto, "Products retrieved successfully.");
+			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
-		public IDataResult<PagedResult<ProductToCategoryListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
+		public IDataResult<PagedResult<ProductListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
 		{
 			var totalProducts = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false).Count();
 
@@ -298,7 +316,7 @@ namespace Business.Concrete
 
 			if (products == null || products.Count == 0)
 			{
-				return new ErrorDataResult<PagedResult<ProductToCategoryListDto>>("No products found for this category.");
+				return new ErrorDataResult<PagedResult<ProductListDto>>("No products found for this category.");
 			}
 
 			var productListDto = products.Select(p =>
@@ -306,17 +324,18 @@ namespace Business.Concrete
 				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
 				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "default-image-url";
 
-				return new ProductToCategoryListDto
-				{
+				return new ProductListDto
+                {
 					Name = p.Name,
-					Price = p.IsDiscount ? p.DiscountPrice : p.Price,
+					Price = p.Price,
 					IsDiscount = p.IsDiscount,
-					DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
-					ImageUrl = firstImageUrl
+					DiscountPrice = p.DiscountPrice,
+					ImageUrl = firstImageUrl,
+
 				};
 			}).ToList();
 
-			var pagedResult = new PagedResult<ProductToCategoryListDto>
+			var pagedResult = new PagedResult<ProductListDto>
 			{
 				Items = productListDto,
 				TotalCount = totalProducts,
@@ -325,10 +344,38 @@ namespace Business.Concrete
 				TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize)
 			};
 
-			return new SuccessDataResult<PagedResult<ProductToCategoryListDto>>(pagedResult, "Products retrieved successfully.");
+			return new SuccessDataResult<PagedResult<ProductListDto>>(pagedResult, "Products retrieved successfully.");
 		}
 
-   
+        public IDataResult<List<ProductListDto>> GetProductsByBrand(int brandId)
+        {
+            var products = _productDal.GetAll(p => p.BrandId == brandId && p.IsDelete == false).ToList();
+            if (products == null || products.Count == 0)
+            {
+                return new ErrorDataResult<List<ProductListDto>>("No products found for this category.");
+            }
+
+            var productListDto = products.Select(p =>
+            {
+                var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+                var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url"; ;
+
+                return new ProductListDto
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    IsDiscount = p.IsDiscount,
+                    DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+                    ImageUrl = firstImageUrl,
+					IsFeatured = p.IsFeatured,
+					IsDelivery = p.IsDelivery,
+					ProductId = p.Id,
+                };
+            }).ToList();
+
+
+            return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
+        }
     }
 }
 		

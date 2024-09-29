@@ -15,13 +15,14 @@ namespace Business.Abstract
 		IResult Update(ProductUpdateDto productUpdateDto,List<int> deleteImageIds);
 		IResult Delete(int id);
 		IDataResult<List<Product>> GetAll();
-		IDataResult<List<ProductToCategoryListDto>> GetProductsByCategory(int categoryId);
-		IDataResult<List<ProductListDto>> GetProductList();
-		IDataResult<List<ProductToCategoryListDto>> GetNewestProducts();
+		IDataResult<List<ProductListDto>> GetProductsByCategory(int categoryId);
+        IDataResult<List<ProductListDto>> GetProductsByBrand(int brandId);
+        IDataResult<List<ProductListDto>> GetProductList();
+		IDataResult<List<ProductListDto>> GetNewestProducts();
 		IDataResult<Product> Get(int id);
 		IDataResult<ProductDetailDto> GetProductDetails(int productId);
-		IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceAscending();
-		IDataResult<List<ProductToCategoryListDto>> GetProductsSortedByPriceDescending();
-		IDataResult<PagedResult<ProductToCategoryListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize);
+		IDataResult<List<ProductListDto>> GetProductsSortedByPriceAscending();
+		IDataResult<List<ProductListDto>> GetProductsSortedByPriceDescending();
+		IDataResult<PagedResult<ProductListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize);
 	}
 }

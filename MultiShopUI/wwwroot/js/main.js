@@ -159,23 +159,24 @@
         ]
     });
     
-    
-    // Quantity
-    $('.qty button').on('click', function () {
-        var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
-        if ($button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
-        }
-        $button.parent().find('input').val(newVal);
-    });
-    
+    ////quantity
+    //$('.qty button').on('click', function () {
+    //    var $button = $(this);
+    //    var oldValue = $button.parent().find('input').val();
+
+    //    if ($button.hasClass('btn-plus')) {
+    //        var newVal = parseInt(oldValue) + 1;  // Her defe 1 artir
+    //    } else {
+    //        if (oldValue > 1) {  // Miqdar minimum 1 ola biler
+    //            var newVal = parseInt(oldValue) - 1; // Her defe 1 azalir
+    //        } else {
+    //            newVal = 1;  // Miqdar hec vaxt 0 olmasin
+    //        }
+    //    }
+
+    //    $button.parent().find('input').val(newVal);
+    //    $('#hiddenQuantityInput').val(newVal); // Gizli inputu da yenil?
+    //});
     
     // Shipping address show hide
     $('.checkout #shipto').change(function () {
@@ -243,6 +244,18 @@
             });
         }
     }
+
+    //function updateQuantity(amount) {
+    //    var quantityInput = document.getElementById("quantityInput");
+    //    var hiddenQuantityInput = document.getElementById("hiddenQuantityInput");
+    //    var currentQuantity = parseInt(quantityInput.value);
+    //    var newQuantity = currentQuantity + amount;
+
+    //    if (newQuantity >= 1) { // Miqdar?n 0-dan az olmamas? üçün
+    //        quantityInput.value = newQuantity;
+    //        hiddenQuantityInput.value = newQuantity; // Form il? gönd?ril?c?k gizli input
+    //    }
+    //}
 
 
 })(jQuery);

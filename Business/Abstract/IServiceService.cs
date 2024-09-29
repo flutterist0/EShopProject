@@ -13,7 +13,7 @@ namespace Business.Abstract
     public interface IServiceService
 	{
 		IResult Add(ServiceAddDto serviceDto);
-		IResult Update(ServiceUpdateDto serviceUpdateDto, int id);
+		//IResult Update(ServiceUpdateDto serviceUpdateDto, int id);
 		IResult Delete(int id);
 		IDataResult<List<Service>> GetAll();
 		IDataResult<Service> Get(int id);

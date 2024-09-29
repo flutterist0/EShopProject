@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,18 @@ namespace DataAccess.Concrete.EF
         public EfProductImageDal(AppDbContext context) : base(context)
 		{
             
+        }
+
+        public void DeleteImage(Product product, List<int> deleteIds)
+        {
+            using (var context = new AppDbContext())
+            {
+                var imagesToDelete = context.ProductImages
+                                             .Where(pi => deleteIds.Contains(pi.Id) && pi.ProductId == product.Id)
+                                             .ToList();
+                context.ProductImages.RemoveRange(imagesToDelete);
+                context.SaveChanges();
+            }
         }
     }
 }

@@ -1,0 +1,83 @@
+﻿@using EShopUI.Models
+@model CheckoutVM     
+  <!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Products</a></li>
+            <li class="breadcrumb-item active">Checkout</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Checkout Start -->
+<div class="checkout">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="billing-address">
+                    <h2>Shipping Address</h2>
+                    <form asp-action="Checkout" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>First Name</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.FirstName" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Last Name"</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.LastName" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>E-mail</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.Email" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Mobile No</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.PhoneNumber" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Country</label>
+                                <select asp-for="@Model.GetShippingAddress.CountryId" class="form-control" asp-items="ViewBag.Countries" disabled></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>City</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.City" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>State</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.State" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>ZIP Code</label>
+                                <input class="form-control" type="text" placeholder="@Model.GetShippingAddress.ZipCode" readonly>
+                            </div>
+
+                        </div>
+                    </form>
+                    
+                </div>
+
+              
+            </div>
+            <div class="col-md-5">
+                <div class="checkout-summary">
+                    <h2>Cart Total</h2>
+					<div class="checkout-content">
+						<h3>Products</h3>
+                        @foreach(var product in Model.GetCheckout.Products)
+                        {
+                            <p>@product.ProductName<span>@product.Price</span></p>
+                        }
+                        <p class="sub-total">Sub Total<span>$@Model.GetCheckout.SubTotal</span></p>
+                        <p class="ship-cost">Shipping Cost<span>$@Model.GetCheckout.ShippingCost</span></p>
+                        <h4>Grand Total<span>$@Model.GetCheckout.GrandTotal</span></h4>
+                    </div>
+                </div>
+                <br />
+                <a asp-action="AddOrder" class="btn btn-primary">Place Order</a>    
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Checkout End -->

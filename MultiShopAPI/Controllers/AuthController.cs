@@ -72,5 +72,16 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 		}
 
+		[HttpPut("changePassword")]
+		public IActionResult ChangePassword(ChangePasswordDto changePasswordDto, int userId)
+		{
+			var result = _userService.ChangePassword(changePasswordDto, userId);
+			if (result.Success)
+			{
+				return Ok(result);
+			}else
+				return BadRequest(result);
+		}
+
 	}
 }

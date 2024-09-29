@@ -4,16 +4,18 @@ using Entities.Concrete;
 using Entities.Dto;
 using EShopUI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using static NuGet.Packaging.PackagingConstants;
 
 namespace EShopUI.Controllers
 {
-    public class AccountController(IShippingAddressService shippingAddressService,IOrderService orderService,IPaymentMethodService paymentMethodService,IUserService userService) : Controller
+    public class AccountController(IShippingAddressService shippingAddressService,IOrderService orderService,IPaymentMethodService paymentMethodService,IUserService userService,ICountryService countryService) : Controller
     {
         private readonly IShippingAddressService _shippingAddressService = shippingAddressService;
         private readonly IOrderService _orderService = orderService;
         private readonly IPaymentMethodService _paymentMethodService = paymentMethodService;
         private readonly IUserService _userService = userService;
+        private readonly ICountryService _countryService = countryService;
         public IActionResult Account()
         {
             var userId = int.Parse(Request.Cookies["userId"]);
@@ -63,6 +65,19 @@ namespace EShopUI.Controllers
             return View("Account", accountViewModel);
 
         }
+        public IActionResult ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var userId = int.Parse(Request.Cookies["userId"]);
+            var result = _userService.ChangePassword(changePasswordDto, userId);
+            if (result.Success)
+            {
+                ViewBag.Message = result.Message;
+                return RedirectToAction("Account");
+            }else
+                ViewBag.Error = result.Message;
+  return View(changePasswordDto);
+        }
+     
 
         public IActionResult DeleteShippingAddress()
         {
@@ -88,22 +103,25 @@ namespace EShopUI.Controllers
         [HttpGet]
         public IActionResult AddShippingAddress()
         {
+            ViewBag.Countries = new SelectList(_countryService.GetAll().Data, "Id", "Name");
             return View();
         }
 
         [HttpPost]
         public IActionResult AddShippingAddress(ShippingAddressAddDto model)
         {
+            var userId = int.Parse(Request.Cookies["userId"]);
             if (ModelState.IsValid)
             {
-                var result = _shippingAddressService.Add(model);
+                var result = _shippingAddressService.Add(model,userId);
                 if (result.Success)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Account");
                 }
 
                 ModelState.AddModelError("", result.Message);
             }
+            ViewBag.Countries = new SelectList(_countryService.GetAll().Data, "Id", "Name");
             return View(model);
         }
 

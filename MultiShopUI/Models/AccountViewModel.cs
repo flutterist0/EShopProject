@@ -10,5 +10,6 @@ namespace EShopUI.Models
         public List<PaymentMethod> PaymentMethods { get; set; }
         public UserGetDto User { get; set; }
         public UserUpdateDto UpdtUsr { get; set; }
+        public ChangePasswordDto ChangePasswordDto { get; set; }
     }
 }

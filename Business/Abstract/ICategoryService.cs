@@ -15,6 +15,8 @@ namespace Business.Abstract
 		IResult Update(Category category, int id);
 		IResult Delete(int id);
 		IDataResult<List<Category>> GetAll();
+		IDataResult<List<Category>> GetAllIsFeatured();
+		IDataResult<List<CategoryWithProductsDto>> GetAllCategoriesWithProducts();
 		IDataResult<Category> Get(int id);
 	}
 }

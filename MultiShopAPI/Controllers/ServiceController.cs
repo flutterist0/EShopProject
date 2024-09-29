@@ -47,17 +47,17 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 		}
 
-		[HttpPut]
-		public IActionResult Update(ServiceUpdateDto service, int id)
-		{
-			var result = _serviceService.Update(service, id);
-			if (result.Success)
-			{
-				return Ok(result);
-			}
-			else
-				return BadRequest(result);
-		}
+		//[HttpPut]
+		//public IActionResult Update(ServiceUpdateDto service, int id)
+		//{
+		//	var result = _serviceService.Update(service, id);
+		//	if (result.Success)
+		//	{
+		//		return Ok(result);
+		//	}
+		//	else
+		//		return BadRequest(result);
+		//}
 
 		[HttpDelete("delete:{id:int:min(1)}")]
 		public IActionResult Delete(int id)

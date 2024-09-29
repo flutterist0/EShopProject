@@ -9,6 +9,7 @@ namespace Entities.Dto.ProductDtos
 {
     public class ProductCheckoutDto:IDto
     {
+        public decimal? ShippingCost { get; set; }
         public string ProductName { get; set; }
         public decimal? Price { get; set; }
         public int Quantity { get; set; }

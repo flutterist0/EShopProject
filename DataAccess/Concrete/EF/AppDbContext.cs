@@ -14,7 +14,7 @@ namespace DataAccess.Concrete.EF
 	{
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Server=DESKTOP-K0V6ESA\SQLEXPRESS;Database=FinalProjectDb;Trusted_Connection=true;TrustServerCertificate=true");
+			optionsBuilder.UseSqlServer(@"Server=DESKTOP-K0V6ESA\SQLEXPRESS;Database=EShopDb;Trusted_Connection=true;TrustServerCertificate=true");
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             //optionsBuilder.EnableSensitiveDataLogging();
         }

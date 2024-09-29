@@ -10,6 +10,7 @@ namespace Business.Abstract
 {
     public interface IOrderService
     {
+        IResult AddOrder(int userId,int shippingAddressId);
         IDataResult<List<OrderDto>> GetOrdersByUserId(int userId);
     }
 }

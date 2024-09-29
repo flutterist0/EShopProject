@@ -7,11 +7,12 @@ namespace EShopUI.Areas.Dashboard.Controllers
 {
 	[Area("Dashboard")]
 
-    public class ProductsController(IProductService productService,IProductImageService productImageService,ICategoryService categoryService) : Controller
+    public class ProductsController(IProductService productService,IProductImageService productImageService,ICategoryService categoryService,IBrandService brandService) : Controller
 	{
 		private readonly IProductService _productService = productService;
 		private readonly IProductImageService _productImageService = productImageService;
 		private readonly ICategoryService _categoryService = categoryService;
+        private readonly IBrandService _brandService = brandService;
 		public IActionResult Index()
 		{
 			return View();
@@ -20,6 +21,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
 		public IActionResult AddProduct()
 		{
             ViewBag.Categories = new SelectList(_categoryService.GetAll().Data, "Id", "Name");
+            ViewBag.Brands = new SelectList(_brandService.GetAll().Data, "Id", "Name");
             return View();
 		}
 
@@ -40,6 +42,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
 				}
 			}
             ViewBag.Categories = new SelectList(_categoryService.GetAll().Data, "Id", "Name");
+            ViewBag.Brands = new SelectList(_brandService.GetAll().Data, "Id", "Name");
             return View(productAddDto);
 		}
 
@@ -91,8 +94,8 @@ namespace EShopUI.Areas.Dashboard.Controllers
             }
         }
 
-        [HttpGet("editProduct/{id}")]
-        public IActionResult EditProduct(int id)
+        [HttpGet]
+        public IActionResult UpdateProduct(int id)
         {
             var product = _productService.Get(id); 
 
@@ -110,23 +113,29 @@ namespace EShopUI.Areas.Dashboard.Controllers
                 IsDiscount = product.Data.IsDiscount,
                 DiscountPrice = product.Data.IsDiscount ? product.Data.DiscountPrice : 0,
                 Stock = product.Data.Stock,
-                Quantity = product.Data.Quantity,
+                BrandId = product.Data.BrandId, 
                 IsFeatured = product.Data.IsFeatured,
                 CategoryId = product.Data.CategoryId,
+                ShippingCost = product.Data.ShippingCost,
+                IsDelivery = product.Data.IsDelivery,
                 ExistingImages = _productImageService.GetProductImages(product.Data.Id), 
             };
             ViewBag.Categories = new SelectList(_categoryService.GetAll().Data, "Id", "Name");
+            ViewBag.Brands = new SelectList(_brandService.GetAll().Data, "Id", "Name");
             return View(productUpdateDto);
         }
 
-        [HttpPost("editProduct")]
+        [HttpPost]
         public IActionResult UpdateProduct(ProductUpdateDto productUpdateDto, List<int> DeleteImages)
         {
             if (!ModelState.IsValid)
             {
                 return View(productUpdateDto);
             }
-
+            if (productUpdateDto.ProductImages==null)
+            {
+                productUpdateDto.ProductImages = new();
+            }
             var result = _productService.Update(productUpdateDto, DeleteImages);
 
             if (!result.Success)

@@ -11,9 +11,9 @@ namespace EShopAPI.Controllers
 	{
 		private readonly IShippingAddressService _shippingAddressService = shippingAddressService;
 		[HttpPost]
-		public IActionResult Add(ShippingAddressAddDto shippingAddressAddDto)
+		public IActionResult Add(ShippingAddressAddDto shippingAddressAddDto,int userId)
 		{
-			var result = _shippingAddressService.Add(shippingAddressAddDto);
+			var result = _shippingAddressService.Add(shippingAddressAddDto,userId);
             if (result.Success)
             {
 				return Ok(result);

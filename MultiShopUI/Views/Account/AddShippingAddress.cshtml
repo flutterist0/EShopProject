@@ -1,0 +1,66 @@
+﻿
+@using Entities.Dto
+
+@model ShippingAddressAddDto
+<h2>Add Shipping Address</h2>
+
+<form asp-action="AddShippingAddress" method="post">
+    <div class="container-fluid">
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Street" class="form-label"></label>
+            <input asp-for="Street" class="form-control" />
+            <span asp-validation-for="Street" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="City" class="form-label"></label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="State" class="form-label"></label>
+            <input asp-for="State" class="form-control" />
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CountryId" class="form-label"></label>
+            <select asp-for="CountryId" class="form-control" asp-items="ViewBag.Countries"></select>
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ZipCode" class="form-label"></label>
+            <input asp-for="ZipCode" class="form-control" />
+            <span asp-validation-for="ZipCode" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Address</button>
+        <a asp-controller="Account" asp-action="Account" class="btn btn-secondary">Cancel</a>
+
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

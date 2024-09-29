@@ -34,8 +34,19 @@ namespace EShopAPI.Controllers
 			else
 				return BadRequest(result);
 		}
+		[HttpGet("getAllBrandsWithProducts")]
+		public IActionResult GetAllBrandsWithProducts()
+		{
+			var result = _brandService.GetAllBrandsWithProducts();
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			else
+				return BadRequest(result);
+		}
 
-        [HttpGet("get{id:int:min(1)}")]
+		[HttpGet("get{id:int:min(1)}")]
         public IActionResult Get(int id)
         {
             var result = _brandService.Get(id);

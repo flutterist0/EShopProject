@@ -77,7 +77,7 @@ namespace EShopUI.Controllers
 
                 if (registerDto.Password != registerDto.RePassword)
                 {
-                    ModelState.AddModelError("Password", "Şifreler eşleşmiyor.");
+                    ModelState.AddModelError("Password", "Shifleler uygun deyil");
                     return View(registerDto);
                 }
 

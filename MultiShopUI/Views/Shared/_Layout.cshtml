@@ -6,6 +6,7 @@
 @{
     var fullName = Context.Request.Cookies["FullName"];
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,16 +52,27 @@
                 </div>
                 <div class="col-md-3">
                     <div class="user">
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@fullName </a>
-                            <div class="dropdown-menu">
-                                <a asp-controller="Auth" asp-action="Logout" id="logoutButton" class="dropdown-item">Logout</a>
-                                <a asp-controller="Account" asp-action="Account" class="dropdown-item">My Account</a>
+                        @if (!string.IsNullOrEmpty(fullName))
+                        {
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@fullName </a>
+                                <div class="dropdown-menu">
+                                    <a asp-controller="Auth" asp-action="Logout" id="logoutButton" class="dropdown-item">Logout</a>
+                                    <a asp-controller="Account" asp-action="Account" class="dropdown-item">My Account</a>
+                                </div>
                             </div>
-                        </div>
+                        }else
+                        {
+                            <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary">Login</a>
+                            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary">Register</a>
+                        }
+
+                        
+                        
+
                         <div class="cart">
-                            <i class="fa fa-cart-plus"></i>
-                            <span>(0)</span>
+                            <a asp-controller="Cart" asp-action="Cart"><i class="fa fa-cart-plus"></i></a>
+                            <span></span>
                         </div>
                     </div>
                 </div>
@@ -80,19 +92,19 @@
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav m-auto">
                         <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="product-list.html" class="nav-item nav-link">Products</a>
+                        <a asp-controller="Product" asp-action="Product" class="nav-item nav-link">Products</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu">
                                 <a href="product-list.html" class="dropdown-item">Product</a>
                                 <a href="product-detail.html" class="dropdown-item">Product Detail</a>
-                                <a href="cart.html" class="dropdown-item">Cart</a>
-                                <a href="wishlist.html" class="dropdown-item">Wishlist</a>
+                                <a asp-controller="Cart" asp-action="Cart" class="dropdown-item">Cart</a>
+                                <a asp-controller="Favourite" asp-action="Favourite" class="dropdown-item">Wishlist</a>
                                 <a href="checkout.html" class="dropdown-item">Checkout</a>
                                 <a href="login.html" class="dropdown-item">Login & Register</a>
                             </div>
                         </div>
-                        <a href="contact.html" class="nav-item nav-link">Contact Us</a>
+                        <a asp-controller="Contact" asp-action="Contact" class="nav-item nav-link">Contact Us</a>
                     </div>
                 </div>
             </nav>

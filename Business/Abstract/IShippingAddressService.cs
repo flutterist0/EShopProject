@@ -10,8 +10,9 @@ namespace Business.Abstract
 {
 	public interface IShippingAddressService
 	{
-		IResult Add(ShippingAddressAddDto shippingAddressAddDto);
+		IResult Add(ShippingAddressAddDto shippingAddressAddDto,int userId);
 		IDataResult<ShippingAddressGetAllDto> GetByUserIdShippingAddresses(int userId);
+
 		IResult Delete(int userId);
 	}
 }

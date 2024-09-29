@@ -19,7 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
 builder.Services.AddAuthentication(x =>
 {
 	x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

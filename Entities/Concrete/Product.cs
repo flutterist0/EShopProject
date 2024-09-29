@@ -18,9 +18,10 @@ namespace Entities.Concrete
         public bool IsDelivery { get; set; }
         public decimal? ShippingCost { get; set; }
         public int Stock { get; set; }
-        public int Quantity { get; set; }
         public bool IsFeatured { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int BrandId { get; set; }
+        public Brand Brand { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 

@@ -31,6 +31,10 @@ namespace DataAccess.Concrete.EF
                 State = s.State,
                 Street = s.Street,
                 PhoneNumber = s.PhoneNumber,
+                Email = s.Email,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                ZipCode = s.ZipCode,
             }).FirstOrDefault();
            return shippingAddress;
         }

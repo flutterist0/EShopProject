@@ -15,7 +15,7 @@ namespace Business.Concrete
 	public class FavouriteManager(IFavouriteDal favouriteDal) : IFavouriteService
 	{
 		private readonly IFavouriteDal _favouriteDal = favouriteDal;
-		public IResult AddFavourite(int productId, int userId)
+		public IResult AddFavourite(int productId, int userId,int quantity)
 		{
 			var existingFavorite = _favouriteDal.Get(f => f.ProductId == productId && f.UserId == userId);
 
@@ -26,13 +26,16 @@ namespace Business.Concrete
 			var favorite = new Favourite
 			{
 				ProductId = productId,
-				UserId = userId
+				UserId = userId,
+				Quantity = quantity
 			};
 			_favouriteDal.Add(favorite);
+
 			return new SuccessResult("Product added to favorites");
 		}
 
-		public IResult DeleteFavorite(int productId, int userId)
+
+        public IResult DeleteFavorite(int productId, int userId)
 		{
 			var favorite = _favouriteDal.Get(f => f.ProductId == productId && f.UserId == userId);
 
@@ -40,8 +43,8 @@ namespace Business.Concrete
 			{
 				return new ErrorResult("Favorite yoxdu");
 			}
-			favorite.IsDelete = true;	
-			_favouriteDal.Delete(favorite);
+
+            _favouriteDal.DeleteX(favorite);
 			return new SuccessResult("Product favoritlerden silindi");
 		}
 
@@ -55,6 +58,7 @@ namespace Business.Concrete
 			}
 			var favoriteDtos = favorites.Select(f => new FavouriteGetAllDto
 			{
+				ProductId = f.ProductId,
 				ProductName = f.Product.Name,
 				Price = f.Product.Price,
 				ImageUrl = f.Product.ProductImages.FirstOrDefault()?.ImageUrl ?? "",

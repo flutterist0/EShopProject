@@ -10,6 +10,18 @@ namespace EShopAPI.Controllers
     {
         private readonly IOrderService _orderService = orderService;
 
+        [HttpPost]
+        public IActionResult AddOrder(int userId,int shippingAddressId)
+        {
+            var result = _orderService.AddOrder(userId, shippingAddressId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }else
+                return BadRequest(result);
+        }
+
+
         [HttpGet("getOrdersByUserId:{userId:int:min(1)}")]
         public IActionResult GetOrdersByUserId(int userId)
         {

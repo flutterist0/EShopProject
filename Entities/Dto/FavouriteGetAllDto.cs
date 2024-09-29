@@ -9,7 +9,8 @@ namespace Entities.Dto
 {
 	public class FavouriteGetAllDto:IDto
 	{
-		public string ProductName { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
 		public decimal? Price { get; set; }
         public bool IsDiscount { get; set; }
         public decimal? DiscountPrice { get; set; }

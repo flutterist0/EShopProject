@@ -15,25 +15,101 @@ namespace Core.DataAccess.Concrete
         where TContext : DbContext, new()
     {
         private readonly TContext _context = context;
-        
+
+        //public void Add(TEntiy entity)
+        //{ 
+        //        var addedEntity = _context.Entry(entity);
+        //        addedEntity.State = EntityState.Added;
+        //        _context.SaveChanges();
+        //}
+
         public void Add(TEntiy entity)
-        { 
-                var addedEntity = _context.Entry(entity);
-                addedEntity.State = EntityState.Added;
-                _context.SaveChanges();
+        {
+            var entityType = typeof(TEntiy);
+            var idProperty = entityType.GetProperty("Id");
+
+            if (idProperty != null)
+            {
+                var idValue = idProperty.GetValue(entity);
+
+                if (idValue != null && !idValue.Equals(default(int)))
+                {
+                    var existingEntity = _context.Set<TEntiy>().Find(idValue);
+
+                    if (existingEntity != null)
+                    {
+                        _context.Entry(existingEntity).State = EntityState.Detached;
+                    }
+                }
+            }
+
+            _context.Entry(entity).State = EntityState.Added;
+            _context.SaveChanges();
         }
 
         public void Delete(TEntiy entity)
         {
-            var deletedEntity = _context.Entry(entity);
-            deletedEntity.State = EntityState.Modified;
-            _context.SaveChanges();
+            var entityType = typeof(TEntiy);
+            var idProperty = entityType.GetProperty("Id");
+            if (idProperty != null)
+            {
+                var idValue = idProperty.GetValue(entity);
+                var model = _context.Set<TEntiy>().Find(idValue);
+                if (model != null)
+                {
+                    _context.Entry(model).State = EntityState.Detached;
+                    _context.Entry(entity).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
+            }
+     
 
         }
 
+        //public void DeleteRange(IEnumerable<TEntiy> entities)
+        //{
+        //    _context.RemoveRange(entities);
+        //    _context.SaveChanges();
+
+        //}
+
         public void DeleteRange(IEnumerable<TEntiy> entities)
         {
-            _context.RemoveRange(entities);
+            var entityType = typeof(TEntiy);
+            foreach (var entity in entities)
+            {
+                var idProperty = entityType.GetProperty("Id");
+                if (idProperty != null)
+                {
+                    var idValue = idProperty.GetValue(entity);
+                    var model = _context.Set<TEntiy>().Find(idValue);
+
+                    if (model != null)
+                    {
+                        _context.Entry(model).State = EntityState.Deleted;
+                    }
+                }
+            }
+            _context.SaveChanges();
+        }
+
+
+        public void DeleteX(TEntiy entity)
+        {
+            var entityType = typeof(TEntiy);
+            var idProperty = entityType.GetProperty("Id");
+            if (idProperty != null)
+            {
+                var idValue = idProperty.GetValue(entity);
+                var model = _context.Set<TEntiy>().Find(idValue);
+                if (model != null)
+                {
+                    _context.Entry(model).State = EntityState.Detached;
+                    _context.Set<TEntiy>().Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+        
         }
 
         public TEntiy Get(Expression<Func<TEntiy, bool>> filter)
@@ -65,8 +141,6 @@ namespace Core.DataAccess.Concrete
                     _context.SaveChanges();
                 }
             }
-            //_context.Update(entity);
-            //_context.SaveChanges();
 
         }
    

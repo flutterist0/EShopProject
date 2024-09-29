@@ -1,6 +1,8 @@
 ﻿using Core.DataAccess.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.Dto;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +17,21 @@ namespace DataAccess.Concrete.EF
 		{
             
         }
-    }
+
+		public List<CategoryWithProductsDto> GetAllCategoriesWithProducts()
+		{
+			var context = new AppDbContext();
+			var categoriesWithProducts =  context.Categories
+	 .Select(c => new CategoryWithProductsDto
+	 {
+		 CategoryId = c.Id,
+		 Name = c.Name,
+		 Products = context.Products
+							 .Where(p => p.CategoryId == c.Id)
+							 .ToList() 
+	 })
+	 .ToList();
+			return categoriesWithProducts;
+		}
+	}
 }

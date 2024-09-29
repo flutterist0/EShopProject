@@ -33,7 +33,7 @@ namespace Business.Concrete
 			if (result != null)
 			{
 				deleteContact = result;
-
+				deleteContact.IsDelete = true;
 				_contactDal.Delete(deleteContact);
 				return new SuccessResult("deleted");
 			}

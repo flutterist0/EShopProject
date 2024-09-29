@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
+using Core.Helpers.Security.Hashing;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
@@ -20,6 +21,30 @@ namespace Business.Concrete
 		public void Add(User user)
 		{
             _userDal.Add(user);
+        }
+
+        public IDataResult<User> ChangePassword(ChangePasswordDto changePasswordDto, int userId)
+        {
+            var user = _userDal.Get(u=>u.Id==userId);
+            if (user == null)
+            {
+                return new ErrorDataResult<User>("İstifadəçi tapılmadı.");
+            }
+            if (!HashingHelper.VerifiedPasswordHash(changePasswordDto.CurrentPassword, user.PasswordHash, user.PasswordSalt))
+            {
+                return new ErrorDataResult<User>("Cari parol yanlışdır.");
+            }
+            if (changePasswordDto.NewPassword != changePasswordDto.ConfirmPassword)
+            {
+                return new ErrorDataResult<User>("Yeni parol təsdiq paroluna uyğun deyil.");
+            }
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.CreatePasswordHash(changePasswordDto.NewPassword, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            _userDal.Update(user);
+
+            return new SuccessDataResult<User>(user, "Parol uğurla dəyişdirildi.");
         }
 
         public IDataResult<UserGetDto> GetById(int userId)

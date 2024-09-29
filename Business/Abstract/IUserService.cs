@@ -15,6 +15,8 @@ namespace Business.Abstract
 		void Add(User user);
 		User GetByMail(string email);
 		IResult Update(UserUpdateDto userUpdateDto, int userId);
-		IDataResult<UserGetDto> GetById(int userId); 
-	}
+		IDataResult<UserGetDto> GetById(int userId);
+		IDataResult<User> ChangePassword(ChangePasswordDto changePasswordDto, int userId);
+
+    }
 }
