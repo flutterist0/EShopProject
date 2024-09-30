@@ -91,19 +91,11 @@
 
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav m-auto">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <a asp-controller="Home" asp-action="Index" class="nav-item nav-link active">Home</a>
                         <a asp-controller="Product" asp-action="Product" class="nav-item nav-link">Products</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu">
-                                <a href="product-list.html" class="dropdown-item">Product</a>
-                                <a href="product-detail.html" class="dropdown-item">Product Detail</a>
-                                <a asp-controller="Cart" asp-action="Cart" class="dropdown-item">Cart</a>
-                                <a asp-controller="Favourite" asp-action="Favourite" class="dropdown-item">Wishlist</a>
-                                <a href="checkout.html" class="dropdown-item">Checkout</a>
-                                <a href="login.html" class="dropdown-item">Login & Register</a>
-                            </div>
-                        </div>
+                        <a asp-controller="Cart" asp-action="Cart" class="nav-item nav-link">Cart</a>
+                        <a asp-controller="Favourite" asp-action="Favourite" class="nav-item nav-link">Wishlist</a>
+                   
                         <a asp-controller="Contact" asp-action="Contact" class="nav-item nav-link">Contact Us</a>
                     </div>
                 </div>

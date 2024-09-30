@@ -18,11 +18,13 @@ namespace Business.Abstract
 		IDataResult<List<ProductListDto>> GetProductsByCategory(int categoryId);
         IDataResult<List<ProductListDto>> GetProductsByBrand(int brandId);
         IDataResult<List<ProductListDto>> GetProductList();
-		IDataResult<List<ProductListDto>> GetNewestProducts();
-		IDataResult<Product> Get(int id);
+        IDataResult<List<ProductListDto>> GetProductListIsFeatured();
+        IDataResult<List<ProductListDto>> GetNewestProducts();
+        IDataResult<List<ProductListDto>> GetNewestProductsIsFeatuerd();
+        IDataResult<Product> Get(int id);
 		IDataResult<ProductDetailDto> GetProductDetails(int productId);
 		IDataResult<List<ProductListDto>> GetProductsSortedByPriceAscending();
 		IDataResult<List<ProductListDto>> GetProductsSortedByPriceDescending();
-		IDataResult<PagedResult<ProductListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize);
+		IDataResult<PagedResult<ProductListDto>> GetProductsWithPagination( int pageNumber, int pageSize);
 	}
 }

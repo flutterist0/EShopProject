@@ -215,9 +215,10 @@ namespace EShopUI.Controllers
             return RedirectToAction("GetProductsByBrand", new { brandId = id });
         }
 
-        public IActionResult GetProductsByCategoryWithPagination(int categoryId, int pageNumber = 1, int pageSize = 10)
+        public IActionResult GetProductsWithPagination(int pageNumber = 3, int pageSize = 3)
         {
-            var result = _productService.GetProductsByCategoryWithPagination(categoryId, pageNumber, pageSize);
+            var result = _productService.GetProductsWithPagination(pageNumber, pageSize);
+
             if (result.Success)
             {
                 ProductVM vm = new()
@@ -237,6 +238,7 @@ namespace EShopUI.Controllers
                 return NotFound();
             }
         }
+
 
 
     }

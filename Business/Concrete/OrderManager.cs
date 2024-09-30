@@ -34,7 +34,7 @@ namespace Business.Concrete
             var shippingAddress = _shippingAddressDal.Get(s => s.Id == shippingAddressId && s.UserId == userId);
             if (shippingAddress == null)
             {
-                return new ErrorResult("Göndərmə ünvanı tapılmadı və ya istifadəçiyə aid deyil");
+                return new ErrorResult("Shipping ünvanı tapılmadı və ya istifadəçiyə aid deyil");
             }
 
             foreach (var item in items)
@@ -55,7 +55,15 @@ namespace Business.Concrete
                 if (product != null)
                 {
                     product.Stock -= item.Quantity;
-                    _productDal.Update(product);
+                    if (product.Stock <= 0)
+                    {
+                        product.IsDelete = true;
+                        _productDal.Delete(product);
+                    }
+                    else
+                    {
+                        _productDal.Update(product);
+                    }
                 }
             }
             _cartItemDal.DeleteRange(items);

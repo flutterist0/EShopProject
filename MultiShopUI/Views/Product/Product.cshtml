@@ -69,33 +69,36 @@
                     
                 </div>
 
-                <div class="col-lg-12">
-                    <nav aria-label="Page navigation example">
+
+                @if (Model.TotalPages > 1)
+                {
+                      <div class="col-lg-12">
+                    <nav aria-label="Product pagination">
                         <ul class="pagination justify-content-center">
                             @if (Model.PageNumber > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="GetProductsByCategoryWithPagination" asp-route-categoryId="@Model.SelectedCategoryId" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
                                 </li>
                             }
 
                             @for (int i = 1; i <= Model.TotalPages; i++)
                             {
                                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                    <a class="page-link" asp-action="GetProductsByCategoryWithPagination" asp-route-categoryId="@Model.SelectedCategoryId" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
                                 </li>
                             }
 
                             @if (Model.PageNumber < Model.TotalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="GetProductsByCategoryWithPagination" asp-route-categoryId="@Model.SelectedCategoryId" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
                                 </li>
                             }
                         </ul>
                     </nav>
-                </div>
-
+                    </div>
+                }
             </div>
 
 

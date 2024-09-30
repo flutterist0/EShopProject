@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Validation.FluentValidation;
+using Core.Aspect.Autofac.Validation.FluentValidation;
 using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
@@ -304,48 +306,43 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
 
-		public IDataResult<PagedResult<ProductListDto>> GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
-		{
-			var totalProducts = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false).Count();
+        public IDataResult<PagedResult<ProductListDto>> GetProductsWithPagination(int pageNumber, int pageSize)
+        {
+            var totalProducts = _productDal.GetAll(p => p.IsDelete == false).Count();
+            var products = _productDal.GetAll(p => p.IsDelete == false)
+                                      .OrderBy(p => p.Name)
+                                      .Skip((pageNumber - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .ToList();
+            if (products == null || products.Count == 0)
+            {
+                return new ErrorDataResult<PagedResult<ProductListDto>>("No products found.");
+            }
+            var productListDto = products.Select(p =>
+            {
+                var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+                var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "default-image-url";
 
-			var products = _productDal.GetAll(p => p.CategoryId == categoryId && p.IsDelete == false)
-									  .OrderBy(p => p.Name)
-									  .Skip((pageNumber - 1) * pageSize)
-									  .Take(pageSize)
-									  .ToList();
-
-			if (products == null || products.Count == 0)
-			{
-				return new ErrorDataResult<PagedResult<ProductListDto>>("No products found for this category.");
-			}
-
-			var productListDto = products.Select(p =>
-			{
-				var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
-				var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "default-image-url";
-
-				return new ProductListDto
+                return new ProductListDto
                 {
-					Name = p.Name,
-					Price = p.Price,
-					IsDiscount = p.IsDiscount,
-					DiscountPrice = p.DiscountPrice,
-					ImageUrl = firstImageUrl,
+                    Name = p.Name,
+                    Price = p.Price,
+                    IsDiscount = p.IsDiscount,
+                    DiscountPrice = p.DiscountPrice,
+                    ImageUrl = firstImageUrl
+                };
+            }).ToList();
+            var pagedResult = new PagedResult<ProductListDto>
+            {
+                Items = productListDto,
+                TotalCount = totalProducts,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize)
+            };
+            return new SuccessDataResult<PagedResult<ProductListDto>>(pagedResult, "Products retrieved successfully.");
+        }
 
-				};
-			}).ToList();
-
-			var pagedResult = new PagedResult<ProductListDto>
-			{
-				Items = productListDto,
-				TotalCount = totalProducts,
-				PageNumber = pageNumber,
-				PageSize = pageSize,
-				TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize)
-			};
-
-			return new SuccessDataResult<PagedResult<ProductListDto>>(pagedResult, "Products retrieved successfully.");
-		}
 
         public IDataResult<List<ProductListDto>> GetProductsByBrand(int brandId)
         {
@@ -373,6 +370,50 @@ namespace Business.Concrete
                 };
             }).ToList();
 
+
+            return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
+        }
+
+        public IDataResult<List<ProductListDto>> GetProductListIsFeatured()
+        {
+            var result = _productDal.GetAllProductsIsFeatured();
+            if (result.Count > 0)
+            {
+                return new SuccessDataResult<List<ProductListDto>>(result);
+            }
+            else
+                return new ErrorDataResult<List<ProductListDto>>("xeta bas verdi");
+        }
+
+        public IDataResult<List<ProductListDto>> GetNewestProductsIsFeatuerd()
+        {
+            var products = _productDal.GetAll(p => p.IsDelete == false&&p.IsFeatured==true)
+                             .OrderByDescending(p => p.CreatedAt).Take(4)
+                             .ToList();
+
+            if (products == null || products.Count == 0)
+            {
+                return new ErrorDataResult<List<ProductListDto>>("No products found.");
+            }
+
+            var productListDto = products.Select(p =>
+            {
+                var productImages = _productImageDal.GetAll(pi => pi.ProductId == p.Id).ToList();
+                var firstImageUrl = productImages.FirstOrDefault()?.ImageUrl ?? "defaultimage-url"; ;
+
+                return new ProductListDto
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    IsDiscount = p.IsDiscount,
+                    DiscountPrice = p.IsDiscount ? p.DiscountPrice : null,
+                    ImageUrl = firstImageUrl,
+                    IsDelivery = p.IsDelivery,
+                    IsFeatured = p.IsFeatured,
+                    ProductId = p.Id,
+
+                };
+            }).ToList();
 
             return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
         }

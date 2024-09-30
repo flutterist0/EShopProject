@@ -40,7 +40,29 @@ namespace DataAccess.Concrete.EF
 			return result.ToList();
 		}
 
-		public Product GetById(int productId)
+        public List<ProductListDto> GetAllProductsIsFeatured()
+        {
+            AppDbContext appDbContext = new();
+            var result = from p in appDbContext.Products
+                         where p.IsDelete == false && p.IsFeatured == true
+                         select new ProductListDto
+                         {
+                             ProductId = p.Id,
+                             Name = p.Name,
+                             Price = p.Price,
+                             DiscountPrice = p.DiscountPrice,
+                             IsDelivery = p.IsDelivery,
+                             IsDiscount = p.IsDiscount,
+                             IsFeatured = p.IsFeatured,
+                             ImageUrl = appDbContext.ProductImages
+                         .Where(pi => pi.ProductId == p.Id)
+                         .Select(pi => pi.ImageUrl)
+                         .FirstOrDefault(),
+                         };
+            return result.Take(5).ToList();
+        }
+
+        public Product GetById(int productId)
 		{
 			AppDbContext appDbContext = new();
 			return appDbContext.Products

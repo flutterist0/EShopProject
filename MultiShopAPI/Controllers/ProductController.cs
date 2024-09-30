@@ -91,9 +91,9 @@ namespace EShopAPI.Controllers
 		}
 
 		[HttpGet("getProductsByCategoryWithPagination")]
-		public IActionResult GetProductsByCategoryWithPagination(int categoryId, int pageNumber, int pageSize)
+		public IActionResult GetProductsByCategoryWithPagination(int pageNumber, int pageSize)
 		{
-			var result = _productService.GetProductsByCategoryWithPagination(categoryId, pageNumber, pageSize);
+			var result = _productService.GetProductsWithPagination( pageNumber, pageSize);
 			if (result.Success)
 			{
 				return Ok(result);

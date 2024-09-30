@@ -6,11 +6,12 @@ using System.Diagnostics;
 
 namespace MultiShopUI.Controllers
 {
-	public class HomeController(IServiceService serviceService,ICategoryService categoryService,IBrandService brandService) : Controller
+	public class HomeController(IServiceService serviceService,ICategoryService categoryService,IBrandService brandService,IProductService productService) : Controller
 	{
 		private readonly IServiceService _serviceService = serviceService;
 		private readonly ICategoryService _categoryService = categoryService;
 		private readonly IBrandService _brandService = brandService;
+        private readonly IProductService _productService = productService;
 		public IActionResult Index()
 		{
 			try
@@ -19,7 +20,9 @@ namespace MultiShopUI.Controllers
 				{
 					GetServices = _serviceService.GetAll().Data,
 					GetCategoriesIsFeatured = _categoryService.GetAllIsFeatured().Data,
-					GetBrands = _brandService.GetAll().Data
+					GetBrands = _brandService.GetAll().Data,
+					GetProductListIsFeatured = _productService.GetProductListIsFeatured().Data,
+					GetNewestProductsIsFeatuerd = _productService.GetNewestProductsIsFeatuerd().Data,
 				};
                 return View(vm);
             }
@@ -28,5 +31,6 @@ namespace MultiShopUI.Controllers
                 return View(ex);
             }
 		}
-	}
+
+    }
 }
