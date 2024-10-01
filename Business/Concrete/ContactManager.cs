@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
@@ -25,7 +26,7 @@ namespace Business.Concrete
 			else
 				return new ErrorResult("ELave edilmedi");
 		}
-
+		[SecuredOperation("Admin")]
 		public IResult Delete(int id)
 		{
 			Contact deleteContact = null;
@@ -49,8 +50,8 @@ namespace Business.Concrete
 				return new SuccessDataResult<Contact>(result, "loaded");
 			else return new ErrorDataResult<Contact>(result, "tapilmadi");
 		}
-
-		public IDataResult<List<Contact>> GetAll()
+        
+        public IDataResult<List<Contact>> GetAll()
 		{
 			var result = _contactDal.GetAll(s => s.IsDelete == false).ToList();
 			if (result.Count > 0)

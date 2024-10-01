@@ -26,7 +26,7 @@ namespace Business.Concrete
 				Name = reviewAddDto.Name,	
 				Email = reviewAddDto.Email,
 				Comment = reviewAddDto.Comment,
-				ReviewDate = reviewAddDto.ReviewDate,
+				ReviewDate = DateTime.Now,
 				ProductId = reviewAddDto.ProductId,
 				Rating = reviewAddDto.Rating,
 			};

@@ -1,5 +1,6 @@
 ﻿using Autofac.Core;
 using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
@@ -32,7 +33,7 @@ namespace Business.Concrete
 			_brandDal.Add(brand);
 			return new SuccessResult("Elave olundu");
 		}
-
+		
 		public IResult Delete(int id)
 		{
 			Brand deleteBrand = null;
@@ -56,8 +57,8 @@ namespace Business.Concrete
 				return new SuccessDataResult<Brand>(result, "loaded");
 			else return new ErrorDataResult<Brand>(result, "tapilmadi");
 		}
-
-		public IDataResult<List<Brand>> GetAll()
+     
+        public IDataResult<List<Brand>> GetAll()
 		{
 			var result = _brandDal.GetAll(s => s.IsDelete == false).ToList();
 			if (result.Count > 0)
@@ -67,7 +68,7 @@ namespace Business.Concrete
 
 		public IDataResult<List<BrandWithProductsDto>> GetAllBrandsWithProducts()
 		{
-			var result = _brandDal.GetAllBrandsWithProducts();
+			var result = _brandDal.GetAllBrandsWithProducts().Where(b=>b.IsDelete==false).ToList();
 			if (result.Count > 0)
 			{
 				return new SuccessDataResult<List<BrandWithProductsDto>>(result);
@@ -75,7 +76,7 @@ namespace Business.Concrete
 			else
 				return new ErrorDataResult<List<BrandWithProductsDto>>(result, "xeta");
 		}
-
+	
 		public IResult Update(Brand brand, int id)
 		{
 			var updateBrand = _brandDal.Get(a => a.Id == id);

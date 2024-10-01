@@ -83,5 +83,15 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 		}
 
+		[HttpGet("getAllUsers")]
+		public IActionResult GetAllUsers()
+		{
+			var result = _userService.GetUsersWithOperationClaim();
+            if (result.Count>0)
+            {
+				return Ok(result);
+            }else
+				return BadRequest(result);
+        }
 	}
 }

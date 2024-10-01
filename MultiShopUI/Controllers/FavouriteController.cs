@@ -12,11 +12,15 @@ namespace EShopUI.Controllers
         private readonly IFavouriteService _favouriteService = favouriteService;
         public IActionResult Favourite()
         {
-            var userId = int.Parse(Request.Cookies["userId"]);
-            //var result = _favouriteService.GetAllFavorites(userId);
 
-         
-                var vm = new FavouriteVM
+            var userId = int.Parse(Request.Cookies["userId"]??"0");
+            //var result = _favouriteService.GetAllFavorites(userId);
+            if (userId==null||userId ==0)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var vm = new FavouriteVM
                 {
                     FavouriteList = _favouriteService.GetAllFavorites(userId).Data
                 };

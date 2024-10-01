@@ -51,11 +51,18 @@
                                                 <button class="btn-plus"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </td>
-                                        <td><button>Add to Cart</button></td>
+                                        <td>
+                                            <form method="post" action="@Url.Action("AddToCart", "Cart")">
+                                                <input type="hidden" name="ProductId" value="@favourite.ProductId" />
+                                                <input type="hidden" name="Quantity" id="hiddenQuantityInput" value="1" />
+                                                <input type="hidden" name="UserId" value="@userId" />
+                                                <button type="submit" class="btn"><i class="fa fa-shopping-cart"></i> </button>
+                                            </form>
+                                        </td>
                                         <td>
                                             <form asp-action="DeleteFavorite" asp-controller="Favourite" method="post">
                                                 <input type="hidden" name="productId" value="@favourite.ProductId" />
-                                                <input type="hidden" name="userId" value="@userId" /> <!-- Burada login olan istifadəçinin ID-sini qeyd edin -->
+                                                <input type="hidden" name="userId" value="@userId" /> 
                                                 <button type="submit" class="btn btn-danger">
                                                     <i class="fa fa-trash"></i>
                                                 </button>

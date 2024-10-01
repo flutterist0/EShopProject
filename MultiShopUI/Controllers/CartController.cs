@@ -9,12 +9,15 @@ namespace EShopUI.Controllers
         private readonly ICartService _cartService = cartService;
         public IActionResult Cart()
         {
-            int userId = int.Parse(Request.Cookies["userId"]);
-            //var result = _cartService.GetAllCarts(userId);
-                var vm = new CartVM 
-                {
-                    CartItems = _cartService.GetAllCarts(userId).Data 
-                };
+            int userId = int.Parse(Request.Cookies["userId"]??"0");
+            if (userId == null || userId == 0) 
+            {
+                return RedirectToAction("Login","Auth");
+            }
+            var vm = new CartVM 
+            {
+                CartItems = _cartService.GetAllCarts(userId).Data 
+            };
             if (vm.CartItems!=null)
             {
                  ViewData["UserId"] = userId;

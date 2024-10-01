@@ -47,6 +47,17 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(user, "Parol uğurla dəyişdirildi.");
         }
 
+        public IDataResult<List<User>> GetAll()
+        {
+            var result = _userDal.GetAll();
+            if (result.Count > 0)
+            {
+                return new SuccessDataResult<List<User>>(result, "Datalar yuklendi");
+            }
+            else
+                return new ErrorDataResult<List<User>>(result, "Xeta");
+        }
+
         public IDataResult<UserGetDto> GetById(int userId)
         {
             var result = _userDal.GetUserById(userId);
@@ -64,6 +75,17 @@ namespace Business.Concrete
 		{
 			return _userDal.GetClaims(user);
 		}
+        
+        public User GetUserById(int userId)
+        {
+            return _userDal.Get(u => u.Id == userId);
+          
+        }
+
+        public List<UserOperationClaimDto> GetUsersWithOperationClaim()
+        {
+            return _userDal.GetAllUsers();
+        }
 
         public IResult Update(UserUpdateDto userUpdateDto, int userId)
         {

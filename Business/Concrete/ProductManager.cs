@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Validation.FluentValidation;
 using Core.Aspect.Autofac.Validation.FluentValidation;
 using Core.Helpers.Business;
@@ -120,8 +121,7 @@ namespace Business.Concrete
 
 			return new SuccessDataResult<ProductDetailDto>(productDetailsDto);
 		}
-
-		public IDataResult<List<ProductListDto>> GetProductList()
+        public IDataResult<List<ProductListDto>> GetProductList()
 		{
 			var result = _productDal.GetAllProducts();
 			if (result.Count > 0)
@@ -325,6 +325,7 @@ namespace Business.Concrete
 
                 return new ProductListDto
                 {
+					ProductId = p.Id,
                     Name = p.Name,
                     Price = p.Price,
                     IsDiscount = p.IsDiscount,

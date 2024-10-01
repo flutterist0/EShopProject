@@ -9,9 +9,10 @@ using System.Text.Json;
 
 namespace EShopUI.Controllers
 {
-    public class AuthController(IAuthService authService) : Controller
+    public class AuthController(IAuthService authService,IUserService userService) : Controller
     {
         private readonly IAuthService _authService = authService;
+        private readonly IUserService _userService = userService;   
         [HttpGet]
         public IActionResult Login()
         {
@@ -29,14 +30,6 @@ namespace EShopUI.Controllers
                 if (result.Success)
                 {
                     var user = result.Data;
-                    var userClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-                    new Claim("UserId", user.Id.ToString()) 
-                };
-                    var claimsIdentity = new ClaimsIdentity(userClaims, "Login");
-                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     var userData = JsonSerializer.Serialize(user);
                     var userId = user.Id.ToString();
                     var fullName = $"{user.FirstName} {user.LastName}";

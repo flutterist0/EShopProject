@@ -20,7 +20,7 @@ namespace Business.BusinessAspect.Autofac
         public SecuredOperation(string roles)
         {
             _roles = roles.Split(',');
-            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>()!;
            
         }
       
@@ -35,7 +35,7 @@ namespace Business.BusinessAspect.Autofac
                 }
 
             }
-            Exception exception = new("Yetkiniz yoxdur");
+            Exception exception = new("Duxunuz catmir");
             throw exception;
         }
     }

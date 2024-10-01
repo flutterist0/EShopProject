@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Entities.Dto.ProductDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -13,7 +15,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
 		private readonly IProductImageService _productImageService = productImageService;
 		private readonly ICategoryService _categoryService = categoryService;
         private readonly IBrandService _brandService = brandService;
-		public IActionResult Index()
+        public IActionResult Index()
 		{
 			return View();
 		}
@@ -46,7 +48,6 @@ namespace EShopUI.Areas.Dashboard.Controllers
             return View(productAddDto);
 		}
 
-
         public IActionResult GetAllProducts()
 		{
 			try
@@ -55,7 +56,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
 				return View(products.Data);
 			}catch(Exception ex)
 			{
-                return View("Error:");
+                 return RedirectToAction("AccessDenied", "Dashboard");
             }
 		}
 

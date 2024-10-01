@@ -67,5 +67,18 @@ namespace Business.Concrete
 			}
 			return new SuccessResult();
 		}
-	}
+        public IDataResult<bool> CheckIfUserIsAdmin(int userId,User user)
+        {
+            var claims = _userService.GetClaims(user);
+			var existUser = _userService.GetById(userId).Data;
+            var isAdmin = claims.Any(c => c.Name == "Admin");
+            if (isAdmin && existUser is not null)
+            {
+                return new SuccessDataResult<bool>(true, "İcazə verildi");
+            }
+            return new ErrorDataResult<bool>(false, "İcazə rədd edildi");
+        }
+
+	
+    }
 }

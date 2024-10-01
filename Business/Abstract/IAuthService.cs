@@ -16,5 +16,7 @@ namespace Business.Abstract
 		IDataResult<User> Login(LoginDto loginDto);
 		IResult UserExists(string email);
 		IDataResult<AccessToken> CreateAccessToken(User user);
-	}
+		IDataResult<bool> CheckIfUserIsAdmin(int userId,User user);
+
+    }
 }

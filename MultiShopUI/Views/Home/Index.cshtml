@@ -1,5 +1,8 @@
 ﻿@using EShopUI.Models
 @model HomeVM 
+@{
+    var userId = ViewData["UserId"];
+}
 <!-- Main Slider Start -->
 <div class="home-slider">
     <div class="main-slider">
@@ -71,10 +74,23 @@
                             <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@item.ProductId">
                                 <img src="@item.ImageUrl" alt="Product Image">
                             </a>
-                            <div class="product-action">
-                                <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                <a href="#"><i class="fa fa-heart"></i></a>
-                                <a href="#"><i class="fa fa-search"></i></a>
+                            <div class="product-action text-center">
+                                <div class="row justify-content-center">
+                                    <form method="post" action="@Url.Action("AddToCart", "Cart")" class="mx-2">
+                                        <input type="hidden" name="ProductId" value="@item.ProductId" />
+                                        <input type="hidden" name="Quantity" id="hiddenQuantityInput" value="1" />
+                                        <input type="hidden" name="UserId" value="@userId" />
+                                        <button type="submit" class="btn"><i class="fa fa-shopping-cart"></i> </button>
+                                    </form>
+                                    <br />
+                                    <form method="post" action="@Url.Action("AddToFavorites", "Favourite")" class="mx-2">
+                                        <input type="hidden" name="ProductId" value="@item.ProductId" />
+                                        <input type="hidden" name="Quantity" value="1" id="quantityInput" />
+                                        <button type="submit" class="btn"><i class="fa fa-heart"></i> </button>
+                                    </form>
+                                </div>
+
+
                             </div>
                         </div>
                         <div class="product-content">
@@ -138,10 +154,23 @@
                             <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@item.ProductId">
                                 <img src="@item.ImageUrl" alt="Product Image">
                             </a>
-                            <div class="product-action">
-                                <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                <a href="#"><i class="fa fa-heart"></i></a>
-                                <a href="#"><i class="fa fa-search"></i></a>
+                            <div class="product-action text-center">
+                                <div class="row justify-content-center">
+                                    <form method="post" action="@Url.Action("AddToCart", "Cart")" class="mx-2">
+                                        <input type="hidden" name="ProductId" value="@item.ProductId" />
+                                        <input type="hidden" name="Quantity" id="hiddenQuantityInput" value="1" />
+                                        <input type="hidden" name="UserId" value="@userId" />
+                                        <button type="submit" class="btn"><i class="fa fa-shopping-cart"></i> </button>
+                                    </form>
+                                    <br />
+                                    <form method="post" action="@Url.Action("AddToFavorites", "Favourite")" class="mx-2">
+                                        <input type="hidden" name="ProductId" value="@item.ProductId" />
+                                        <input type="hidden" name="Quantity" value="1" id="quantityInput" />
+                                        <button type="submit" class="btn"><i class="fa fa-heart"></i> </button>
+                                    </form>
+                                </div>
+
+
                             </div>
                         </div>
                         <div class="product-content">

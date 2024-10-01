@@ -1,10 +1,44 @@
 ﻿@using EShopUI.Models
 
 @model ProductVM
-
+@{
+    var userId = ViewData["UserId"];
+}
 <div class="product-view">
     <div class="container">
         <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar-widget category">
+                    <h2 class="title">Category</h2>
+                    <ul>
+                        @foreach (var category in Model.GetAllCategoriesWithProducts)
+                        {
+                            <li>
+                                <a asp-action="Category" asp-route-id="@category.CategoryId">
+                                    @category.Name
+                                </a>
+                                <span>(@category.Products.Count)</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+
+
+                <div class="sidebar-widget brands">
+                    <h2 class="title">Our Brands</h2>
+                    <ul>
+                        @foreach (var brand in Model.GetAllBrandsWithProducts)
+                        {
+
+                            <li><a asp-action="Brand" asp-route-id="@brand.BrandId">@brand.Name </a><span>(@brand.Products.Count)</span></li>
+
+                        }
+                    </ul>
+                </div>
+
+
+            </div>
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-lg-12">
@@ -37,10 +71,23 @@
                                     <a asp-action="ProductDetails" asp-route-id="@product.ProductId">
                                         <img src="@product.ImageUrl" alt="Product Image">
                                     </a>
-                                    <div class="product-action">
-                                        <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                        <a href="#"><i class="fa fa-heart"></i></a>
-                                        <a href="#"><i class="fa fa-search"></i></a>
+                                    <div class="product-action text-center">
+                                        <div class="row justify-content-center">
+                                            <form method="post" action="@Url.Action("AddToCart", "Cart")" class="mx-2">
+                                                <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                                <input type="hidden" name="Quantity" id="hiddenQuantityInput" value="1" />
+                                                <input type="hidden" name="UserId" value="@userId" />
+                                                <button type="submit" class="btn"><i class="fa fa-shopping-cart"></i> </button>
+                                            </form>
+                                            <br />
+                                            <form method="post" action="@Url.Action("AddToFavorites", "Favourite")" class="mx-2">
+                                                <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                                <input type="hidden" name="Quantity" value="1" id="quantityInput" />
+                                                <button type="submit" class="btn"><i class="fa fa-heart"></i> </button>
+                                            </form>
+                                        </div>
+                                    
+                               
                                     </div>
                                 </div>
                                 <div class="product-content">
@@ -67,8 +114,7 @@
                     }
                    
                     
-                </div>
-
+                </div> 
 
                 @if (Model.TotalPages > 1)
                 {
@@ -78,63 +124,33 @@
                             @if (Model.PageNumber > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                                    <a class="page-link" href="@Url.Action("Product", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
                                 </li>
                             }
 
                             @for (int i = 1; i <= Model.TotalPages; i++)
                             {
                                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                                        <a class="page-link" href="@Url.Action("Product", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
                                 </li>
                             }
 
                             @if (Model.PageNumber < Model.TotalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("GetProductsWithPagination", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                                        <a class="page-link" href="@Url.Action("Product", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
                                 </li>
                             }
                         </ul>
                     </nav>
                     </div>
+             
                 }
             </div>
+        
 
 
 
-            <div class="col-md-3">
-                <div class="sidebar-widget category">
-                    <h2 class="title">Category</h2>
-                    <ul>
-                        @foreach (var category in Model.GetAllCategoriesWithProducts)
-                        {
-                            <li>
-                                <a asp-action="Category" asp-route-id="@category.CategoryId">
-                                    @category.Name
-                                </a>
-                                <span>(@category.Products.Count)</span>
-                            </li>
-                        }
-                    </ul>
-                </div>
-
-     
-
-                <div class="sidebar-widget brands">
-                    <h2 class="title">Our Brands</h2>
-                    <ul>
-                        @foreach (var brand in Model.GetAllBrandsWithProducts)
-                        {
-
-                            <li><a asp-action="Brand" asp-route-id="@brand.BrandId">@brand.Name </a><span>(@brand.Products.Count)</span></li>
-
-                        }
-                    </ul>
-                </div>
-
-                
-            </div>
         </div>
     </div>
 </div>

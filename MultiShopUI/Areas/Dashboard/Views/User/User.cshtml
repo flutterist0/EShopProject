@@ -1,0 +1,51 @@
+﻿@using Entities.Dto
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<UserOperationClaimDto>
+<h2>User List</h2>
+<div style="text-align: right; margin-bottom: 15px;">
+    <a href="@Url.Action("AddOperationClaim", "User")" class="btn btn-primary">Add User</a>
+</div>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>PhoneNumber</th>
+                <th>OperationClaim</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserId</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.OperationClaimName</td>
+                    <td>@(user.Status ? "Active" : "Deactive")</td>
+                    <td>
+                    
+                        <a href="@Url.Action("DeleteConfirmed","User", new { userId = user.UserId,operationClaimId = user.OperationClaimId })" class="btn btn-danger">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No Users found.</p>
+}

@@ -21,7 +21,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
             }
             catch (Exception ex)
             {
-                return View(ex);
+                return RedirectToAction("AccessDenied", "Dashboard");
             }
         }
         public IActionResult AddCategories()

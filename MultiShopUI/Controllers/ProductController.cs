@@ -1,7 +1,11 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
 using Entities.Dto.ReviewDtos;
 using EShopUI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using System.Drawing.Printing;
 
 namespace EShopUI.Controllers
 {
@@ -11,27 +15,30 @@ namespace EShopUI.Controllers
         private readonly IReviewService _reviewService = reviewService;
         private readonly ICategoryService _categoryService = categoryService;
         private readonly IBrandService _brandService = brandService;
-        public IActionResult Product()
+        public IActionResult Product(int pageNumber=1, int pageSize=3)
         {
-            var userId = int.Parse(Request.Cookies["userId"]);
-            try
+            int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+            var result = _productService.GetProductsWithPagination(pageNumber, pageSize);
+
+            if (result.Success)
             {
                 ProductVM vm = new()
                 {
-                    GetProductList = _productService.GetProductList().Data,
+                    GetProductList = result.Data.Items,
+                    TotalCount = result.Data.TotalCount,
+                    PageNumber = result.Data.PageNumber,
+                    PageSize = result.Data.PageSize,
+                    TotalPages = result.Data.TotalPages,
                     GetAllCategoriesWithProducts = _categoryService.GetAllCategoriesWithProducts().Data,
                     GetAllBrandsWithProducts = _brandService.GetAllBrandsWithProducts().Data,
                 };
                 ViewData["UserId"] = userId;
-                return View(vm);
+                return View("Product", vm);
             }
-            catch (Exception ex)
-            {
-                ViewData["UserId"] = userId;
-                return View(ex);
-            }
+            ViewData["UserId"] = userId;
+            return View(result.Message);
+            
         }
-
         public IActionResult ProductDetails(int id)
         {
             var reviews = _reviewService.GetAllByProductId(id).Data ?? new List<ReviewGetAllDto>();
@@ -214,32 +221,6 @@ namespace EShopUI.Controllers
         {
             return RedirectToAction("GetProductsByBrand", new { brandId = id });
         }
-
-        public IActionResult GetProductsWithPagination(int pageNumber = 3, int pageSize = 3)
-        {
-            var result = _productService.GetProductsWithPagination(pageNumber, pageSize);
-
-            if (result.Success)
-            {
-                ProductVM vm = new()
-                {
-                    GetProductList = result.Data.Items,
-                    TotalCount = result.Data.TotalCount,
-                    PageNumber = result.Data.PageNumber,
-                    PageSize = result.Data.PageSize,
-                    TotalPages = result.Data.TotalPages,
-                    GetAllCategoriesWithProducts = _categoryService.GetAllCategoriesWithProducts().Data,
-                    GetAllBrandsWithProducts = _brandService.GetAllBrandsWithProducts().Data,
-                };
-                return View("Product", vm);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-
-
+       
     }
 }

@@ -20,7 +20,16 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);
 
         }
-
+		[HttpDelete("Delete")]
+		public IActionResult Delete(int userId, int operationClaimId)
+		{
+			var result = _userOperationClaimService.Delete(userId, operationClaimId);
+			if (result.Success)
+			{
+				return Ok(result);
+			}else
+				return BadRequest(result);	
+		}
 
 	}
 }

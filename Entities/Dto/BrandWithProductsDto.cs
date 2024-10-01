@@ -12,6 +12,7 @@ namespace Entities.Dto
 	{
 		public int BrandId { get; set; }
 		public string Name { get; set; }
-		public List<Product> Products { get; set; }
+        public bool IsDelete { get; set; }
+        public List<Product> Products { get; set; }
 	}
 }

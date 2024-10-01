@@ -23,6 +23,10 @@ namespace EShopUI.Controllers
             var shippingAddressResult = _shippingAddressService.GetByUserIdShippingAddresses(userId);
             var paymentMethodsResult = _paymentMethodService.GetAll();
             var userGetResult = _userService.GetById(userId);
+            if (userId==null||userId==0 )
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             AccountViewModel vm = new()
             {
                 PaymentMethods = paymentMethodsResult.Success ?paymentMethodsResult.Data : new List<PaymentMethod>(),

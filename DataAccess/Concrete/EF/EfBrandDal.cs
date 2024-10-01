@@ -23,6 +23,7 @@ namespace DataAccess.Concrete.EF
 			var brandsWithProducts = context.Brands
 	 .Select(b => new BrandWithProductsDto
 	 {
+		 IsDelete = b.IsDelete,
 		 BrandId = b.Id,
 		 Name = b.Name,
 		 Products = context.Products

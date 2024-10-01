@@ -31,6 +31,10 @@ namespace MultiShopUI.Controllers
                 return View(ex);
             }
 		}
+        public IActionResult AccessDenied()
+        {
+            return View(); 
+        }
 
     }
 }

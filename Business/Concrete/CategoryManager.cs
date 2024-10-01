@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
@@ -56,7 +57,7 @@ namespace Business.Concrete
 			else return new ErrorDataResult<Category>(result, "tapilmadi");
 		}
 
-		public IDataResult<List<Category>> GetAll()
+        public IDataResult<List<Category>> GetAll()
 		{
 			var result = _categoryDal.GetAll(s => s.IsDelete == false).ToList();
 			if (result.Count > 0)

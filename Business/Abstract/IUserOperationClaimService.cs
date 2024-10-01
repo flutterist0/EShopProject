@@ -10,5 +10,6 @@ namespace Business.Abstract
 	public interface IUserOperationClaimService
 	{
 		IResult Add(int userId, int operationClaimId);
+		IResult Delete(int userId, int operationClaimId);
 	}
 }
