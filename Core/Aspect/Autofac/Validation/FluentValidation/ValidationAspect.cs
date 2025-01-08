@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Core.Aspect.Autofac.Validation.FluentValidation
 {
 	public class ValidationAspect<T> : MethodInterception
-		where T : class, IEntity, new()
+		where T : class,IEntity, new()
 	{
 		private readonly Type _validatorType;
 

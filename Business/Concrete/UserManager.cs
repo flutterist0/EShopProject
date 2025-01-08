@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Entities.Concrete;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
@@ -81,7 +82,7 @@ namespace Business.Concrete
             return _userDal.Get(u => u.Id == userId);
           
         }
-
+        //[SecuredOperation("Admin")]
         public List<UserOperationClaimDto> GetUsersWithOperationClaim()
         {
             return _userDal.GetAllUsers();

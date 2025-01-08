@@ -19,7 +19,8 @@ namespace Business.Concrete
 	{
 		private readonly ICategoryDal _categoryDal = categoryDal;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
-		public IResult Add(CategoryAddDto categoryDto)
+        [SecuredOperation("Admin")]
+        public IResult Add(CategoryAddDto categoryDto)
 		{
 			var guid = Guid.NewGuid() + "-" + categoryDto.Image.FileName;
 			_addPhotoHelperService.AddImage(categoryDto.Image, guid);
@@ -32,8 +33,8 @@ namespace Business.Concrete
 			_categoryDal.Add(category);
 			return new SuccessResult("Elave olundu");
 		}
-
-		public IResult Delete(int id)
+        [SecuredOperation("Admin")]
+        public IResult Delete(int id)
 		{
 			Category deleteCategory = null;
 			Category result = _categoryDal.Get(a => a.Id == id && a.IsDelete == false);

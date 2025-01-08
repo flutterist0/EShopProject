@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -23,14 +24,18 @@ namespace EShopUI.Areas.Dashboard.Controllers
                 return RedirectToAction("AccessDenied", "Dashboard");
             }
 
-            var isAdmin = _authService.CheckIfUserIsAdmin(userId, user);
+           var isAdmin = _authService.CheckIfUserIsAdmin(userId, user);
 
            if (isAdmin.Success)
             {
-                ViewData["IsAdmin"] = isAdmin.Data;
+                var isAdmin1 = isAdmin.Data.ToString();
+
+                HttpContext.Session.SetString("IsAdmin",isAdmin1);
+
                 return View(); 
             }
-            ViewData["IsAdmin"] = isAdmin;
+
+            TempData["IsAdmin"] = isAdmin.Data;
             return RedirectToAction("AccessDenied", "Dashboard"); 
         }
         public IActionResult AccessDenied()

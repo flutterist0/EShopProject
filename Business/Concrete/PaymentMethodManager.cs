@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Validation.FluentValidation;
+using Core.Aspect.Autofac.Validation.FluentValidation;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
@@ -15,7 +17,8 @@ namespace Business.Concrete
 	public class PaymentMethodManager(IPaymentMethodDal paymentMethodDal):IPaymentMethodService
 	{
 		private readonly IPaymentMethodDal _paymentMethodDal = paymentMethodDal;
-		public IResult Add(PaymentMethod paymentMethod)
+        [ValidationAspect<PaymentMethod>(typeof(PaymentMethodValidator))]
+        public IResult Add(PaymentMethod paymentMethod)
 		{
 			if (paymentMethod.MethodName.Length > 3)
 			{

@@ -16,7 +16,8 @@ namespace Business.Concrete
 	public class ContactManager(IContactDal contactDal):IContactService
 	{
 		private readonly IContactDal _contactDal = contactDal;
-		public IResult Add(Contact contact)
+        [SecuredOperation("Admin")]
+        public IResult Add(Contact contact)
 		{
 			if (contact.Description.Length > 3)
 			{

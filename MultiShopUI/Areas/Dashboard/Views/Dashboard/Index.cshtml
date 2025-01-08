@@ -1,6 +1,43 @@
 ﻿@{
     ViewData["Title"] = "Admin Panel";
 }
+<div class="admin-panel-background">
 <div class="text-center">
-    <h1>Admin Panel Page</h1>
+    <h1>Admin Panel </h1>
 </div>
+</div>
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    /* Header üçün üslub */
+    .header {
+        background-color: #333; /* Başlıq üçün arxa fon rəngi */
+        color: white; /* Mətn rəngi */
+        padding: 20px;
+        text-align: center;
+        height: 80px; /* Başlıq hündürlüyü */
+    }
+
+    /* Arxa fon şəkili yalnız main elementində olacaq */
+    .admin-panel-background {
+        background-image: url('/images/adminPanel.jpg'); /* Şəklin doğru yolunu daxil edin */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: calc(100vh - 80px); /* 100% hündürlükdən başlıq hissəsinin hündürlüyünü çıxırıq */
+        width: 100%;
+    }
+
+    .text-center {
+        color: white;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+    }
+</style>

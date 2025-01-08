@@ -26,9 +26,10 @@ namespace Business.Concrete
 		private readonly ICategoryDal _categoryDal =categoryDal;
 		private readonly IProductImageDal _productImageDal = productImageDal;
 		private readonly IBrandDal _brandDal =brandDal;
+		[SecuredOperation("Admin")]
 		public IResult Add(ProductAddDto productAddDto)
-		{
-			var newProduct = new Product()
+        {
+            var newProduct = new Product()
 			{
 				Name = productAddDto.Name,
 				Description = productAddDto.Description,
@@ -57,8 +58,8 @@ namespace Business.Concrete
 			}
 			return new SuccessResult("Added");
 		}
-
-		public IResult Delete(int id)
+        [SecuredOperation("Admin")]
+        public IResult Delete(int id)
 		{
 			Product deleteProduct = null;
 			Product result = _productDal.Get(a => a.Id == id && a.IsDelete == false);
@@ -194,7 +195,7 @@ namespace Business.Concrete
 
 			return new SuccessDataResult<List<ProductListDto>>(productListDto, "Products retrieved successfully.");
 		}
-
+        [SecuredOperation("Admin")]
         public IResult Update(ProductUpdateDto productUpdateDto, List<int> deleteImageIds)
         {
             var existingProduct = _productDal.Get(p => p.Id == productUpdateDto.ProductId && p.IsDelete == false);

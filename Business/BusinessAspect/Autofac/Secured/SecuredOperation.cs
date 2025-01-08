@@ -35,7 +35,7 @@ namespace Business.BusinessAspect.Autofac
                 }
 
             }
-            Exception exception = new("Duxunuz catmir");
+            Exception exception = new("Yetkiniz yoxdur");
             throw exception;
         }
     }

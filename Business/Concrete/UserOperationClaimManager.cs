@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Entities.Concrete;
 using Core.Helpers.Results.Abstract;
 using Core.Helpers.Results.Concrete;
@@ -16,12 +17,13 @@ namespace Business.Concrete
 	public class UserOperationClaimManager(IUserOperationClaimDal userOperationClaimDal) : IUserOperationClaimService
 	{
 		private readonly IUserOperationClaimDal _userOperationClaimDal = userOperationClaimDal;
-		public IResult Add(int userId, int operationClaimId)
+        //[SecuredOperation("Admin")]
+        public IResult Add(int userId, int operationClaimId)
 		{
 			_userOperationClaimDal.Add(new UserOperationClaim() { UserId = userId, OperationClaimId = operationClaimId });
 			return new SuccessResult("Added");
 		}
-
+        //[SecuredOperation("Admin")]
         public IResult Delete(int userId,int operationClaimId)
         {
             UserOperationClaim deleteUserOperationClaim = null;

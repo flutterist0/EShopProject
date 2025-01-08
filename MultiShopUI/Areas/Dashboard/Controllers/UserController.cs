@@ -12,15 +12,17 @@ namespace EShopUI.Areas.Dashboard.Controllers
         private readonly IOperationClaimService _operationClaimService = operationClaimService;
         public IActionResult User()
         {
-            try
+            var isAdmin =Convert.ToBoolean(Request.Cookies["IsAdmin"]);
+            if (isAdmin == true)
             {
                 var result = _userService.GetUsersWithOperationClaim();
+                ViewData["IsAdmin"] = isAdmin;
+
                 return View(result);
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction("AccessDenied", "Dashboard");
-            }
+                
+            }                      
+            return RedirectToAction("AccessDenied", "Dashboard");
+            
         }
 
         public IActionResult AddOperationClaim()
@@ -47,8 +49,8 @@ namespace EShopUI.Areas.Dashboard.Controllers
             }
             ViewBag.OperationClaims = new SelectList(_operationClaimService.GetAll().Data, "Id", "Name");
             ViewBag.Users = new SelectList(_userService.GetAll().Data, "Id", "Name");
-            return View("Error");
-            
+            return RedirectToAction("AccessDenied", "Dashboard");
+
         }
       
         public IActionResult DeleteConfirmed(int userId,int operationClaimId)
@@ -69,7 +71,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return View("Error");
+                return RedirectToAction("AccessDenied", "Dashboard");
             }
         }
     }

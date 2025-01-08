@@ -22,6 +22,7 @@ namespace EShopUI.Areas.Dashboard.Controllers
 
 		public IActionResult AddProduct()
 		{
+
             ViewBag.Categories = new SelectList(_categoryService.GetAll().Data, "Id", "Name");
             ViewBag.Brands = new SelectList(_brandService.GetAll().Data, "Id", "Name");
             return View();

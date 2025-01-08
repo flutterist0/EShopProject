@@ -35,7 +35,7 @@ namespace EShopUI.Controllers
                     var fullName = $"{user.FirstName} {user.LastName}";
                     var cookieOptions = new CookieOptions
                     {
-                        Expires = DateTimeOffset.UtcNow.AddDays(7), 
+                        Expires = DateTimeOffset.UtcNow.AddHours(1), 
                         HttpOnly = true,
                         Secure = true
                     };

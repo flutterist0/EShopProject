@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Core.Entities.Concrete;
 using Core.Helpers.Business;
 using Core.Helpers.Results.Abstract;
@@ -20,7 +21,8 @@ namespace Business.Concrete
 	{
 		private readonly IServiceDal _serviceDal = serviceDal;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
-		public IResult Add(ServiceAddDto serviceDto)
+        [SecuredOperation("Admin")]
+        public IResult Add(ServiceAddDto serviceDto)
 		{
 
 			var guid = Guid.NewGuid() + "-" + serviceDto.Image.FileName;
@@ -35,8 +37,8 @@ namespace Business.Concrete
 			_serviceDal.Add(service);
 			return new SuccessResult("Elave olundu");
 		}
-
-		public IResult Delete(int id)
+        [SecuredOperation("Admin")]
+        public IResult Delete(int id)
 		{
 			Service deleteService = null;
 			Service result = _serviceDal.Get(a => a.Id == id&&a.IsDelete==false);
