@@ -1,51 +1,71 @@
 ﻿@using Entities.Dto
-
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @model List<UserOperationClaimDto>
-<h2>User List</h2>
-<div style="text-align: right; margin-bottom: 15px;">
-    <a href="@Url.Action("AddOperationClaim", "User")" class="btn btn-primary">Add User</a>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">User List</h2>
+        <a href="@Url.Action("AddOperationClaim", "User")" class="btn btn-success shadow">
+            <i class="fas fa-user-plus"></i> Add User
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered shadow-sm rounded">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">User ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" style="width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.UserId</td>
+                            <td>@user.FirstName</td>
+                            <td>@user.LastName</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@user.OperationClaimName</td>
+                            <td>
+                                @if (user.Status==true)
+                                {
+                                    <span class="badge" style="background-color: #007bff; color: white;">Active</span>
+
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background-color: #dc3545; color: white;">Inactive</span>
+
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("DeleteConfirmed", "User", new { userId = user.UserId, operationClaimId = user.OperationClaimId })"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('İstifadəçini silmək istədiyinizə əminsinizmi?');">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info shadow-sm">
+            <i class="fas fa-info-circle"></i> No users found.
+        </div>
+    }
 </div>
-@if (Model != null && Model.Any())
-{
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>Email</th>
-                <th>PhoneNumber</th>
-                <th>OperationClaim</th>
-                <th>Status</th>
-                <th>Actions</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td>@user.UserId</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Email</td>
-                    <td>@user.PhoneNumber</td>
-                    <td>@user.OperationClaimName</td>
-                    <td>@(user.Status)</td>
-                    <td>
-                    
-                        <a href="@Url.Action("DeleteConfirmed","User", new { userId = user.UserId,operationClaimId = user.OperationClaimId })" class="btn btn-danger">Delete</a>
-
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No Users found.</p>
-}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
