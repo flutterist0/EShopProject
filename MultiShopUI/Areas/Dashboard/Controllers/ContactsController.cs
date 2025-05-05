@@ -6,15 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace EShopUI.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
-    public class ContactsController(IContactService contactService) : Controller
+    public class ContactsController(IContactService contactService,IUserOperationClaimService userOperationClaimService) : Controller
     {
         private readonly IContactService _contactService = contactService;
+        private readonly IUserOperationClaimService _userOperationClaimService = userOperationClaimService;
+
         public IActionResult ContactsList()
         {
             try
             {
-                var result = _contactService.GetAll().Data;
-                return View(result);
+                int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+
+                var admin = _userOperationClaimService.GetUserOperationClaimsById(userId);
+                if (admin.Data.OperationClaimName == "Admin")
+                {
+                    var result = _contactService.GetAll().Data;
+                    return View(result);
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Dashboard");
+                }
+          
             }
             catch (Exception ex)
             {

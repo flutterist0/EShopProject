@@ -31,7 +31,12 @@ namespace EShopUI.Controllers
         [HttpPost]
         public IActionResult AddToCart(int productId, int quantity)
         {
-            int userId = int.Parse(Request.Cookies["userId"]);
+            //int userId = int.Parse(Request.Cookies["userId"]);
+            int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+            if (userId == null || userId == 0)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             var result = _cartService.AddCart(productId, userId, quantity);
 
             if (result.Success)

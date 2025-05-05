@@ -3,7 +3,7 @@
 
 <h2>Edit Product</h2>
 
-<!-- Form üçün JavaScript təsdiqi əlavə edirik -->
+
 <form asp-area="Dashboard" asp-controller="Products" asp-action="UpdateProduct" method="post" enctype="multipart/form-data" onsubmit="return confirm('Update etmək istədiyinizə əminsinizmi?');">
     <input type="hidden" asp-for="ProductId" />
 
@@ -22,7 +22,7 @@
         <textarea asp-for="Spesification" class="form-control"></textarea>
     </div>
 
-    <div class="form-group">
+    <div class="form-group">    
         <label asp-for="Price"></label>
         <input asp-for="Price" class="form-control" />
     </div>

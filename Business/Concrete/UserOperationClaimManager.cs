@@ -6,6 +6,7 @@ using Core.Helpers.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EF;
 using Entities.Concrete;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,11 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-	public class UserOperationClaimManager(IUserOperationClaimDal userOperationClaimDal) : IUserOperationClaimService
+	public class UserOperationClaimManager(IUserOperationClaimDal userOperationClaimDal,IUserDal userDal,IOperationClaimDal operationClaimDal) : IUserOperationClaimService
 	{
 		private readonly IUserOperationClaimDal _userOperationClaimDal = userOperationClaimDal;
+        private readonly IUserDal _userDal = userDal;
+        private readonly IOperationClaimDal _operationClaimDal = operationClaimDal;
         //[SecuredOperation("Admin")]
         public IResult Add(int userId, int operationClaimId)
 		{
@@ -38,5 +41,32 @@ namespace Business.Concrete
 
                 return new ErrorResult("silinmedi");
         }
+
+        public IDataResult<UserOperationClaimDto> GetUserOperationClaimsById(int userId)
+        {
+            var result = _userOperationClaimDal.Get(ue => ue.UserId == userId);
+            var user = _userDal.GetUserById(userId);
+            var operationClaim = _operationClaimDal.Get(o=>o.Id==result.OperationClaimId);
+            if (result != null)
+            {
+                var userOperationClaimDto = new UserOperationClaimDto
+                {
+                    UserId = result.UserId,
+                    OperationClaimId = result.OperationClaimId,
+                    OperationClaimName = operationClaim.Name,
+                    FirstName = user.FirstName, 
+                    LastName = user.LastName,   
+                    Email = user.Email,   
+                    PhoneNumber = user.PhoneNumber,
+                };
+
+                return new SuccessDataResult<UserOperationClaimDto>(userOperationClaimDto, "loaded");
+            }
+            else
+            {
+                return new ErrorDataResult<UserOperationClaimDto>(null, "tapilmadi");
+            }
+        }
     }
-}
+    }
+

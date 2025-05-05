@@ -9,12 +9,14 @@ namespace EShopUI.Areas.Dashboard.Controllers
 {
 	[Area("Dashboard")]
 
-    public class ProductsController(IProductService productService,IProductImageService productImageService,ICategoryService categoryService,IBrandService brandService) : Controller
+    public class ProductsController(IProductService productService,IProductImageService productImageService,ICategoryService categoryService,IBrandService brandService,IUserOperationClaimService userOperationClaimService) : Controller
 	{
 		private readonly IProductService _productService = productService;
 		private readonly IProductImageService _productImageService = productImageService;
 		private readonly ICategoryService _categoryService = categoryService;
         private readonly IBrandService _brandService = brandService;
+        private readonly IUserOperationClaimService _usuarioOperationClaimService = userOperationClaimService;
+
         public IActionResult Index()
 		{
 			return View();
@@ -53,9 +55,22 @@ namespace EShopUI.Areas.Dashboard.Controllers
 		{
 			try
 			{
-				var products = _productService.GetProductList();
-				return View(products.Data);
-			}catch(Exception ex)
+                int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+
+                var admin = _usuarioOperationClaimService.GetUserOperationClaimsById(userId);
+                if (admin.Data.OperationClaimName=="Admin")
+                {
+                    var products = _productService.GetProductList();
+                    return View(products.Data);
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Dashboard");
+
+                }
+
+            }
+            catch(Exception ex)
 			{
                  return RedirectToAction("AccessDenied", "Dashboard");
             }

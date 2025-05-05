@@ -51,8 +51,12 @@ namespace EShopUI.Controllers
         [HttpPost]
         public IActionResult AddToFavorites(int productId, int quantity)
         {
-            var userId = int.Parse(Request.Cookies["userId"]);
-            
+            int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+            if (userId == null || userId == 0)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             var result = _favouriteService.AddFavourite(productId, userId,quantity);
 
             if (result.Success)

@@ -6,9 +6,10 @@ namespace EShopAPI.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class UserOperationClaimController(IUserOperationClaimService userOperationClaimService) : ControllerBase
+	public class UserOperationClaimController(IUserOperationClaimService userOperationClaimService,IUserService userService) : ControllerBase
 	{
 		private readonly IUserOperationClaimService _userOperationClaimService = userOperationClaimService;
+		private readonly IUserService _userService = userService;
 		[HttpPost("Add")]
 		public IActionResult Add(int userId,int operationClaimId)
 		{
@@ -31,5 +32,32 @@ namespace EShopAPI.Controllers
 				return BadRequest(result);	
 		}
 
-	}
+		[HttpGet("getUserOperationClaims")]
+		public IActionResult GetUsersWithOperationClaim()
+		{
+			var result = _userService.GetUsersWithOperationClaim();
+            if (result.Count>0)
+            {
+                return Ok(result);
+            }
+            else
+                return BadRequest(result);
+
+        }
+
+        [HttpGet("getUserOperationClaimById {userId:int:min(1)}")]
+        public IActionResult GetUsersWithOperationClaimById(int userId)
+        {
+            var result = _userOperationClaimService.GetUserOperationClaimsById(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+                return BadRequest(result);
+
+        }
+
+
+    }
 }

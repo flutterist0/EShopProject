@@ -9,15 +9,18 @@ namespace EShopUI.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
     
-    public class DashboardController(IAuthService authService,IUserService userService) : Controller
+    public class DashboardController(IAuthService authService,IUserService userService,IUserOperationClaimService userOperationClaimService) : Controller
 	{
         private readonly IAuthService _authService = authService;
         private readonly IUserService _userService = userService;
+        private IUserOperationClaimService _userOperationClaimService = userOperationClaimService;
         public IActionResult Index()
 		{
             int userId = int.Parse(Request.Cookies["userId"]??"0");
+            var operatioClaim = _userOperationClaimService.GetUserOperationClaimsById(userId);
+            ViewData["admin"] = operatioClaim.Data.OperationClaimName;
+            Console.WriteLine(ViewData["admin"]);
             var user = _userService.GetUserById(userId);
-
             if (user == null)
             {
 

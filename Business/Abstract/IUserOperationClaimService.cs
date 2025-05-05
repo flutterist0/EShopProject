@@ -1,4 +1,5 @@
 ﻿using Core.Helpers.Results.Abstract;
+using Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Business.Abstract
 	{
 		IResult Add(int userId, int operationClaimId);
 		IResult Delete(int userId, int operationClaimId);
-	}
+        IDataResult<UserOperationClaimDto> GetUserOperationClaimsById(int userId);
+
+    }
 }

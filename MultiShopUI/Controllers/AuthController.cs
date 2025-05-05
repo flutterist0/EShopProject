@@ -89,7 +89,7 @@ namespace EShopUI.Controllers
             Response.Cookies.Delete("UserInfo");
             Response.Cookies.Delete("FullName");
             Response.Cookies.Delete("userId");
-            await  HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Auth");
         }
 

@@ -84,7 +84,7 @@ namespace Business.Concrete
 			else return new ErrorDataResult<Product>(result, "tapilmadi");
 		}
 
-		public IDataResult<List<Product>> GetAll()
+        public IDataResult<List<Product>> GetAll()
 		{
 			var result = _productDal.GetAll(s => s.IsDelete == false).ToList();
 			if (result.Count > 0)

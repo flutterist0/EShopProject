@@ -34,7 +34,7 @@
                     <td>@user.Email</td>
                     <td>@user.PhoneNumber</td>
                     <td>@user.OperationClaimName</td>
-                    <td>@(user.Status ? "Active" : "Deactive")</td>
+                    <td>@(user.Status)</td>
                     <td>
                     
                         <a href="@Url.Action("DeleteConfirmed","User", new { userId = user.UserId,operationClaimId = user.OperationClaimId })" class="btn btn-danger">Delete</a>

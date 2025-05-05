@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace EShopUI.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
-    public class BrandsController(IBrandService brandService) : Controller
+    public class BrandsController(IBrandService brandService,IUserOperationClaimService userOperationClaimService) : Controller
     {
+        private readonly IUserOperationClaimService _userOperationClaimService = userOperationClaimService;
         private readonly IBrandService _brandService = brandService;   
         public IActionResult Index()
         {
@@ -18,8 +19,17 @@ namespace EShopUI.Areas.Dashboard.Controllers
         {
             try
             {
-                var result = _brandService.GetAll().Data;
-                return View(result);
+                int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+
+                var admin = _userOperationClaimService.GetUserOperationClaimsById(userId);
+                if (admin.Data.OperationClaimName == "Admin")
+                {
+                    var result = _brandService.GetAll().Data;
+                    return View(result);
+                }else
+                {
+                    return RedirectToAction("AccessDenied", "Dashboard");
+                }
             }
             catch (Exception ex)
             {

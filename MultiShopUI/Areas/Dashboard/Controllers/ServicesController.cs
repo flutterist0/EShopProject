@@ -9,9 +9,11 @@ namespace EShopUI.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
 
-    public class ServicesController(IServiceService serviceService) : Controller
+    public class ServicesController(IServiceService serviceService, IUserOperationClaimService userOperationClaimService) : Controller
     {
         private readonly IServiceService _serviceService = serviceService;
+        private readonly IUserOperationClaimService _userOperationClaimService = userOperationClaimService;
+
         public IActionResult Index()
         {
             return View();
@@ -21,8 +23,19 @@ namespace EShopUI.Areas.Dashboard.Controllers
         {
             try
             {
-                var result = _serviceService.GetAll().Data;
-                return View(result);
+                int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+
+                var admin = _userOperationClaimService.GetUserOperationClaimsById(userId);
+                if (admin.Data.OperationClaimName == "Admin")
+                {
+                    var result = _serviceService.GetAll().Data;
+                    return View(result);
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Dashboard");
+                }
+             
             }
             catch (Exception ex)
             {
