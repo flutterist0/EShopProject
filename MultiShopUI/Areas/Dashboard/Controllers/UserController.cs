@@ -12,8 +12,11 @@ namespace EShopUI.Areas.Dashboard.Controllers
         private readonly IOperationClaimService _operationClaimService = operationClaimService;
         public IActionResult User()
         {
+            int userId = int.Parse(Request.Cookies["userId"] ?? "0");
+
+            var operationClame = _userOperationClaimService.GetUserOperationClaimsById(userId);
             var isAdmin =Convert.ToBoolean(Request.Cookies["IsAdmin"]);
-            if (isAdmin == true)
+            if (operationClame.Data.OperationClaimName == "Admin")
             {
                 var result = _userService.GetUsersWithOperationClaim();
                 ViewData["IsAdmin"] = isAdmin;
