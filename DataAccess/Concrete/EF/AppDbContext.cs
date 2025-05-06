@@ -14,10 +14,11 @@ namespace DataAccess.Concrete.EF
 	{
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Server=DESKTOP-K0V6ESA\SQLEXPRESS;Database=EShopDb;Trusted_Connection=true;TrustServerCertificate=true");
+			optionsBuilder.UseSqlServer(@"Server=sql.bsite.net\MSSQL2016;Database=elmir001_EShopDb;User ID=elmir001_EShopDb; Password=5867640e; Trusted_Connection=false;TrustServerCertificate=true");
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             //optionsBuilder.EnableSensitiveDataLogging();
         }
+        //Server=DESKTOP-K0V6ESA\SQLEXPRESS;Database=EShopDb;Trusted_Connection=true;TrustServerCertificate=true
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Cart> Carts { get; set; }
 		public DbSet<CartItem> CartItems { get; set; }
