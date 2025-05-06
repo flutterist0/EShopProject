@@ -20,13 +20,11 @@ namespace Business.Concrete
 		private readonly IUserOperationClaimDal _userOperationClaimDal = userOperationClaimDal;
         private readonly IUserDal _userDal = userDal;
         private readonly IOperationClaimDal _operationClaimDal = operationClaimDal;
-        //[SecuredOperation("Admin")]
         public IResult Add(int userId, int operationClaimId)
 		{
 			_userOperationClaimDal.Add(new UserOperationClaim() { UserId = userId, OperationClaimId = operationClaimId });
 			return new SuccessResult("Added");
 		}
-        //[SecuredOperation("Admin")]
         public IResult Delete(int userId,int operationClaimId)
         {
             UserOperationClaim deleteUserOperationClaim = null;

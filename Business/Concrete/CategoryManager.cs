@@ -19,7 +19,6 @@ namespace Business.Concrete
 	{
 		private readonly ICategoryDal _categoryDal = categoryDal;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
-        [SecuredOperation("Admin")]
         public IResult Add(CategoryAddDto categoryDto)
 		{
 			var guid = Guid.NewGuid() + "-" + categoryDto.Image.FileName;
@@ -33,7 +32,7 @@ namespace Business.Concrete
 			_categoryDal.Add(category);
 			return new SuccessResult("Elave olundu");
 		}
-        [SecuredOperation("Admin")]
+       
         public IResult Delete(int id)
 		{
 			Category deleteCategory = null;
