@@ -20,7 +20,6 @@ namespace Business.Concrete
 	{
 		private readonly IBrandDal _brandDal = brandDal;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
-        [SecuredOperation("Admin")]
         public IResult Add(BrandAddDto brandDto)
 		{
 			var guid = Guid.NewGuid() + "-" + brandDto.Image.FileName;
@@ -34,7 +33,6 @@ namespace Business.Concrete
 			_brandDal.Add(brand);
 			return new SuccessResult("Elave olundu");
 		}
-        [SecuredOperation("Admin")]
         public IResult Delete(int id)
 		{
 			Brand deleteBrand = null;

@@ -16,7 +16,6 @@ namespace Business.Concrete
 	public class ContactManager(IContactDal contactDal):IContactService
 	{
 		private readonly IContactDal _contactDal = contactDal;
-        [SecuredOperation("Admin")]
         public IResult Add(Contact contact)
 		{
 			if (contact.Description.Length > 3)
@@ -27,7 +26,6 @@ namespace Business.Concrete
 			else
 				return new ErrorResult("ELave edilmedi");
 		}
-		[SecuredOperation("Admin")]
 		public IResult Delete(int id)
 		{
 			Contact deleteContact = null;

@@ -21,7 +21,6 @@ namespace Business.Concrete
 	{
 		private readonly IServiceDal _serviceDal = serviceDal;
 		private readonly IAddPhotoHelperService _addPhotoHelperService = addPhotoHelperService;
-        [SecuredOperation("Admin")]
         public IResult Add(ServiceAddDto serviceDto)
 		{
 
@@ -37,7 +36,6 @@ namespace Business.Concrete
 			_serviceDal.Add(service);
 			return new SuccessResult("Elave olundu");
 		}
-        [SecuredOperation("Admin")]
         public IResult Delete(int id)
 		{
 			Service deleteService = null;
